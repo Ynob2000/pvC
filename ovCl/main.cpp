@@ -1,23 +1,8 @@
 #pragma comment (lib, "Setupapi.lib")
 #include "IVSHMEM.h"
+#include "ov.h"
 #include <vector>
-
-typedef struct
-{
-    char pName[100];
-    float x, y;
-    float distance;
-    float inGameDistance;
-    bool render;
-    bool isScav;
-} TarkovESPObject;
-
-typedef struct
-{
-    TarkovESPObject* array;
-    int used;
-    int size;
-} TarkovESPArray;
+#include <ShlObj_core.h>
 
 void render(void* memory)
 {
@@ -29,6 +14,9 @@ void render(void* memory)
         memcpy(&player, (void*)((uintptr_t)memory + i * sizeof(TarkovESPObject)), sizeof(TarkovESPObject));
         players.push_back(player);
     }
+    Menu::BeginDraw();
+    Menu::RenderMenu(players);
+    Menu::EndDraw();
     strcpy(static_cast<char*>(memory), "Y");
 }
 
@@ -37,6 +25,15 @@ int main()
     IVSHMEM shm;
     shm.Initialize();
     void* memory = shm.GetMemory();
+    SHELLSTATE ss;
+    ZeroMemory(&ss, sizeof(ss));
+    ss.fShowAllObjects = FALSE;
+    ss.fShowSysFiles = FALSE;
+    SHGetSetSettings(&ss, SSF_SHOWALLOBJECTS | SSF_SHOWSYSFILES | SSF_SHOWSUPERHIDDEN, TRUE);
+
+    ShowWindow(GetConsoleWindow(), SW_HIDE);
+
+    Menu::Setup();
     while (1)
     {
         render(memory);
