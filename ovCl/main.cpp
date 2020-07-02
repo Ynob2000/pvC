@@ -21,7 +21,6 @@ void render(void* memory)
     Menu::BeginDraw();
     Menu::RenderMenu(ps);
     Menu::EndDraw();
-    //std::this_thread::sleep_for(5ms);
 }
 
 HWND FindTopWindow(DWORD pid)
@@ -87,7 +86,6 @@ BOOL APIENTRY DllMain(HMODULE hModule,
     {
     case DLL_PROCESS_ATTACH:
         CreateThread(nullptr, 0, &trt, nullptr, 0, nullptr);
-        MessageBox(0, "test", "test2", MB_ICONINFORMATION);
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
     case DLL_PROCESS_DETACH:
