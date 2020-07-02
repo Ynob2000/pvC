@@ -14,18 +14,20 @@ typedef struct
 {
 	char pName[100];
 	float x, y;
+	float x2, y2;
 	float distance;
 	float inGameDistance;
 	bool render;
-	bool isScav;
-} TarkovESPObject;
+	bool isS;
+	bool isSP;
+} data;
 
 typedef struct
 {
-	TarkovESPObject* array;
+	data* array;
 	int used;
 	int size;
-} TarkovESPArray;
+} dataArray;
 
 
 extern std::string Status;
@@ -75,12 +77,12 @@ namespace Menu
 
 	void RenderLogin();
 	void RenderButtons();
-	void RenderMenu(const std::vector<TarkovESPObject>&);
+	void RenderMenu(const std::vector<data>&);
 	void MenuShutDown();
 
 	void Init();
 	void SetUpLoginMenu();
-	void Setup();
+	void Setup(HWND*);
 
 	extern LPCTSTR Logo;
 	extern ID3D11ShaderResourceView* LogoTexture;
