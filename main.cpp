@@ -23,10 +23,6 @@ bool waitOk(void* mem)
 void send_data(IVSHMEM* shm, TarkovESPArray* data)
 {
     void* memory = shm->mem;
-    while (!waitOk(memory))
-    {
-
-    }
     size_t size = data->size;
     TarkovESPObject * array = data->array;
     for (size_t t = 0; t < size; ++t) {
@@ -34,7 +30,6 @@ void send_data(IVSHMEM* shm, TarkovESPArray* data)
                 array + t,
                 sizeof(TarkovESPObject));
     }
-    int a = 1;
 }
 
 bool prepare_ivshmem(IVSHMEM* shm)
@@ -45,16 +40,6 @@ bool prepare_ivshmem(IVSHMEM* shm)
         DEBUG_ERROR("Failed to map memory");
         return false;
     }
-    TarkovESPArray * a = new TarkovESPArray;
-    initArray(a, 5);
-    for (int i = 0; i < 5; ++i)
-    {
-        TarkovESPObject Object;
-        Object.x = i;
-
-        insertArray(a, Object);
-    }
-    send_data(shm, a);
     return true;
 }
 
@@ -64,6 +49,21 @@ float getFactorFromDistance(float distance)
     if (distance > 200.f)
         return 0.f;
     return pow(1 - pow(distance / 200.f, 0.4), 3);
+}
+
+void main_loop_win(TarkovGame* tarkov, IVSHMEM* shm) {
+    TarkovESPArray playerarray;
+    initArray(&playerarray, 50);
+    while (true)
+    {
+        // ... all events processed, now do other stuff ...
+        bool ret = tarkov->Tick();
+        if (!ret)
+            break;
+
+        GetTarkovPlayers(tarkov, &playerarray, 1920, 1080);
+        send_data(shm, &playerarray);
+    }
 }
 
 void main_loop(TarkovGame* tarkov)
@@ -233,23 +233,24 @@ void main_loop(TarkovGame* tarkov)
 
 int main()
 {
-//    render();
-//    IVSHMEM shm;
-//    if (!prepare_ivshmem(&shm))
-//    {
-//        DEBUG_ERROR("Failed to prepare IVSHMEM");
-//        return 1;
-//    }
+    IVSHMEM shm;
+    if (!prepare_ivshmem(&shm))
+    {
+        DEBUG_ERROR("Failed to prepare IVSHMEM");
+        return 1;
+    }
     TarkovGame *Tarkov;
     while (!GetTarkovGame(&Tarkov, "EscapeFromTarkov.exe", "UnityPlayer.dll"))
     {
         DEBUG_ERROR("Failed to find Tarkov");
         std::this_thread::sleep_for(2s);
     }
-//    while (!TarkovInGame(Tarkov))
-//    {
-//        DEBUG_INFO("Waiting for game to start");
-//        std::this_thread::sleep_for(2s);
-//    }
-    main_loop(Tarkov);
+    while (!TarkovInGame(Tarkov))
+    {
+        DEBUG_INFO("Waiting for game to start");
+        Tarkov->Tick();
+        std::this_thread::sleep_for(2s);
+    }
+    //main_loop(Tarkov);
+    main_loop_win(Tarkov, &shm);
 }
