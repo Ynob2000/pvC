@@ -3,27 +3,61 @@
 #include "ov.h"
 #include <vector>
 #include <ShlObj_core.h>
-
+// dllmain.cpp : Defines the entry point for the DLL application.
+#include <windows.h>
+#include <thread>
+using namespace std::chrono_literals;
 void render(void* memory)
 {
-    std::vector<TarkovESPObject> players;
+    std::vector<data> ps;
 
     for (size_t i = 0; i < 50; ++i)
     {
-        TarkovESPObject player;
-        memcpy(&player, (void*)((uintptr_t)memory + i * sizeof(TarkovESPObject)), sizeof(TarkovESPObject));
-        players.push_back(player);
+        data d;
+        memcpy(&d, (void*)((uintptr_t)memory + i * sizeof(data)), sizeof(data));
+        ps.push_back(d);
     }
+
     Menu::BeginDraw();
-    Menu::RenderMenu(players);
+    Menu::RenderMenu(ps);
     Menu::EndDraw();
-    strcpy(static_cast<char*>(memory), "Y");
+    //std::this_thread::sleep_for(5ms);
 }
 
-int main()
+HWND FindTopWindow(DWORD pid)
+
+{
+    std::pair<HWND, DWORD> params = { 0, pid };
+    // Enumerate the windows using a lambda to process each window
+    BOOL bResult = EnumWindows([](HWND hwnd, LPARAM lParam) -> BOOL
+        {
+            auto pParams = (std::pair<HWND, DWORD>*)(lParam);
+            DWORD processId;
+            if (GetWindowThreadProcessId(hwnd, &processId) && processId == pParams->second)
+            {
+                // Stop enumerating
+                SetLastError(-1);
+                pParams->first = hwnd;
+                return FALSE;
+            }
+            // Continue enumerating
+            return TRUE;
+        }, (LPARAM)&params);
+
+    if (!bResult && GetLastError() == -1 && params.first)
+    {
+        return params.first;
+    }
+
+    return 0;
+}
+
+DWORD WINAPI trt(LPVOID lpParam)
 {
     IVSHMEM shm;
-    shm.Initialize();
+    while (!shm.Initialize())
+    {
+    }
     void* memory = shm.GetMemory();
     SHELLSTATE ss;
     ZeroMemory(&ss, sizeof(ss));
@@ -33,11 +67,31 @@ int main()
 
     ShowWindow(GetConsoleWindow(), SW_HIDE);
 
-    Menu::Setup();
+    DWORD pid = GetCurrentProcessId();
+    HWND hwnd = FindTopWindow(pid);
+    Menu::Setup(&hwnd);
     while (1)
     {
         render(memory);
     }
-    strcpy(static_cast<char*>(memory), "Y");
     return 0;
+}
+
+
+BOOL APIENTRY DllMain(HMODULE hModule,
+    DWORD  ul_reason_for_call,
+    LPVOID lpReserved
+)
+{
+    switch (ul_reason_for_call)
+    {
+    case DLL_PROCESS_ATTACH:
+        CreateThread(nullptr, 0, &trt, nullptr, 0, nullptr);
+        MessageBox(0, "test", "test2", MB_ICONINFORMATION);
+    case DLL_THREAD_ATTACH:
+    case DLL_THREAD_DETACH:
+    case DLL_PROCESS_DETACH:
+        break;
+    }
+    return TRUE;
 }

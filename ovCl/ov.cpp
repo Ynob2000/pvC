@@ -13,11 +13,9 @@
 
 using namespace ImGui;
 
-// Names
 std::string Status;
 int	PasswordAttempt = 0;
 
-//Menu::Logo = "D:\\Everything\\BigPCheatLogo.png";
 
 // Forward declarations of helper functions
 bool CreateDeviceD3D(HWND hWnd);
@@ -65,11 +63,17 @@ namespace Menu
 
 float getFactorFromDistance(float distance)
 {
-	if (distance < 100.f)
-		return 1.f;
-	else if (distance < 500.f)
-		return 1.f - distance / 800.f;
-	return 0;
+	if (distance > 200.f)
+		return 0.f;
+	/*
+	if (distance > 100.f)
+		return 0.2f;
+	if (distance > 50.f)
+		return 0.5f;
+	if (distance > 30.f)
+		return 0.8f;
+		*/
+	return pow(1 - pow(distance / 200.f, 0.4), 2);
 }
 
 // Simple helper function to load an image into a DX11 texture with common settings
@@ -174,7 +178,7 @@ void Menu::Init()
 	return;
 }
 
-void Menu::RenderMenu(const std::vector<TarkovESPObject>& players)
+void Menu::RenderMenu(const std::vector<data>& ds)
 {
 
 	// Style
@@ -182,14 +186,34 @@ void Menu::RenderMenu(const std::vector<TarkovESPObject>& players)
 
 	// Menu
 	SetNextWindowPos(ImVec2(0, 0));
-	SetNextWindowSize(ImVec2(396, 411));
+	SetNextWindowSize(ImVec2(0, 0));
 	static const auto dwFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar;
 	Begin("o", 0, dwFlags);
 	{
-		for (auto player : players)
+		for (auto p : ds)
 		{
-			ImGui::GetOverlayDrawList()->AddCircle(ImVec2(player.x, player.y), getFactorFromDistance(player.inGameDistance),
-				ImGui::GetColorU32({ 255 / 255.0f, 125 / 255.0f, 125 / 255.0f, 125 / 255.0f }));
+			if (p.inGameDistance == 0)
+				continue;
+			char buff[100];
+			sprintf(buff, "%s (%.2fm)", p.pName, p.inGameDistance);
+			std::string label = buff;
+			float realX = (p.x + 1920) / 2;
+			float realY = (-p.y + 1080) / 2;
+			if (realX == realY && realX == 0)
+				continue;
+			float radius = 50;
+			ImU32 color;
+			if (p.isS)
+			{
+				color = ImGui::GetColorU32({ 255 / 255.0f, 255 / 255.0f, 0 / 255.0f, 255 / 255.0f });
+			}
+			else
+			{
+				color = ImGui::GetColorU32({ 255 / 255.0f, 0, 0, 255 / 255.0f });
+			}
+			ImGui::GetOverlayDrawList()->AddText(ImGui::GetFont(), 10 + 30 * getFactorFromDistance(p.inGameDistance), ImVec2(realX + 1, realY + 1), color, label.c_str());
+			ImGui::GetOverlayDrawList()->AddCircle(ImVec2(realX, realY), radius * getFactorFromDistance(p.inGameDistance),
+				color);
 		}
 	}
 	End();
@@ -223,6 +247,8 @@ void Menu::BeginDraw()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+	UpdateWindow(hwnd);
 }
 
 void Menu::EndDraw()
@@ -236,14 +262,20 @@ void Menu::EndDraw()
 	g_pSwapChain->Present(1, 0); // Present with vsync
 }
 
-void Menu::Setup()
+void Menu::Setup(HWND* win)
 {
+	hwnd = *win;
 	// Create application window
+
 	wc = { sizeof(WNDCLASSEX), NULL, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("t"), NULL };
 	::RegisterClassEx(&wc);
-	hwnd = ::CreateWindow(wc.lpszClassName, _T("t"), WS_EX_COMPOSITED | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOPMOST, 0, 0, 1920, 1080, NULL, NULL, wc.hInstance, NULL);
-
+	/*
+	hwnd = CreateWindowEx(WS_EX_LAYERED,
+		wc.lpszClassName, _T(""), WS_EX_COMPOSITED | WS_EX_LAYERED | WS_EX_TRANSPARENT, 0, 0, 1920, 1080, NULL, NULL, wc.hInstance, NULL);
+		*/
+	//hwnd = GetActiveWindow();
 	// Initialize Direct3D
+	SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 	if (!CreateDeviceD3D(hwnd))
 	{
 		CleanupDeviceD3D();
@@ -258,9 +290,6 @@ void Menu::Setup()
 	// Show the window
 	::ShowWindow(hwnd, SW_MAXIMIZE);
 	::UpdateWindow(hwnd);
-
-	//MARGINS margins = { -1 };
-	//DwmExtendFrameIntoClientArea(hwnd, &margins);
 
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();

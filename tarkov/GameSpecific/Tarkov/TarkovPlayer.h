@@ -61,7 +61,7 @@ public:
 
     TarkovHandsController GetPlayerHandsController()
     {
-        return TarkovHandsController(GameProcess, GameProcess->Read<uint64_t>(Address + 0x428));
+        return TarkovHandsController(GameProcess, GameProcess->Read<uint64_t>(Address + 0x418));
     }
 
     TarkovProceduralWeaponAnimation GetProceduralWeaponAnimation()
