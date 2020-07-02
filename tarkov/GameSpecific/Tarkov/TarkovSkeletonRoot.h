@@ -1,4 +1,6 @@
 #pragma once
+
+#include <xmmintrin.h>
 #include "Includes.h"
 #include "TarkovSkeletonRoot.h"
 
@@ -14,9 +16,14 @@ public:
         Address = Addr;
     }
 
+    uint64_t getBoneEnum()
+    {
+        return GameProcess->Read<uint64_t>(Address + 0x28);
+    }
+
     Vector3f GetLocationMatrixTest()
     {
-        uint64_t m_BoneEnum = GameProcess->Read<uint64_t>(Address + 0x28);
+        uint64_t m_BoneEnum = getBoneEnum();
         uint64_t m_TransformArray = GameProcess->Read<uint64_t>(m_BoneEnum + 0x10);
         uint64_t m_TransformA = GameProcess->Read<uint64_t>(m_TransformArray + 0x20);
         uint64_t m_internalTransformA = GameProcess->Read<uint64_t>(m_TransformA + 0x10);

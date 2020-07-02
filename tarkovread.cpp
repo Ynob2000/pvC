@@ -157,10 +157,16 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
 //            AimBot(Tarkov->GetWinProc(), CameraPosition, CameraMatrix, &myself, vector);
 //        }
         Vector2f *ScreenPos = new Vector2f;
+        Vector2f *HeadScreenPos = new Vector2f;
         Vector3f Offset = Vector3f(0, 1, 0);
 
         bool Render = WorldToScreen(CameraMatrix, PlayerPosition + Offset, *ScreenPos, width, height);
         *ScreenPos += *LocalScreenPos;
+
+        Vector3f headPosition = Player.GetPlayerBody().GetPlayerBones().GetHeadPosition();
+
+        WorldToScreen(CameraMatrix, headPosition + Offset, *HeadScreenPos, width, height);
+        *HeadScreenPos += *LocalScreenPos;
 
         TarkovESPObject Object;
         strcpy(Object.pName, (Player.IsScav() ? Player.IsPlayerScav() ? "Player Scav" : "Scav" : Player.GetPlayerProfile().GetPlayerInfo().GetPlayerName().GetString()).c_str());
@@ -169,13 +175,17 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
             continue;
         Object.x = ScreenPos->x;
         Object.y = ScreenPos->y;
+        Object.xHead = HeadScreenPos->x;
+        Object.yHead = HeadScreenPos->y;
         Object.inGameDistance = distance;
         Object.IsScav = Player.IsScav();
+        Object.IsScavPlayer = Player.IsPlayerScav();
         Object.distance = (CameraPosition - PlayerPosition).length();
 
         insertArray(a, Object);
 
         delete ScreenPos;
+        delete HeadScreenPos;
     }
 
     delete LocalScreenPos;

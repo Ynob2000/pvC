@@ -1,75 +1,33 @@
-//#include "Includes.h"
-#include "tarkov/GameSpecific/Tarkov/Tarkov.h"
-#include "tarkovread.h"
-extern "C" {
-#include "common/ivshmem.h"
-#include "common/debug.h"
-}
-#include <chrono>
-#include <thread>
+/*
+      ____      _____
+    /\__  \   /\  ___\
+    \/__/\ \  \ \ \__/_
+        \ \ \  \ \____ \
+        _\_\ \  \/__/_\ \
+      /\ _____\  /\ _____\
+      \/______/  \/______/
+   Copyright (C) 2011 Joerg Seebohn
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+   This program demonstrates how an X11 window with OpenGL support
+   can be drawn transparent.
+   The title bar and window border drawn by the window manager are
+   drawn opaque.
+   Only the background of the window which is drawn with OpenGL
+         glClearColor( 0.7, 0.7, 0.7, 0.7) ;
+         glClear(GL_COLOR_BUFFER_BIT) ;
+   is 30% transparent.
+   Compile it with:
+   	 gcc -std=gnu99 -o test testprogram.c -lX11 -lGL
+*/
 #include "render.h"
 
-using namespace std::chrono_literals;
 
-struct test{
-    int a;
-};
 
-bool waitOk(void* mem)
+int render()
 {
-    return *static_cast<char*>(mem) == 'Y';
-}
-
-void send_data(IVSHMEM* shm, TarkovESPArray* data)
-{
-    void* memory = shm->mem;
-    while (!waitOk(memory))
-    {
-
-    }
-    size_t size = data->size;
-    TarkovESPObject * array = data->array;
-    for (size_t t = 0; t < size; ++t) {
-        memcpy((void*)((uintptr_t)memory + t * sizeof(TarkovESPObject)),
-                array + t,
-                sizeof(TarkovESPObject));
-    }
-    int a = 1;
-}
-
-bool prepare_ivshmem(IVSHMEM* shm)
-{
-    ivshmemOptionsInit();
-    if (!ivshmemOpen(shm))
-    {
-        DEBUG_ERROR("Failed to map memory");
-        return false;
-    }
-    TarkovESPArray * a = new TarkovESPArray;
-    initArray(a, 5);
-    for (int i = 0; i < 5; ++i)
-    {
-        TarkovESPObject Object;
-        Object.x = i;
-
-        insertArray(a, Object);
-    }
-    send_data(shm, a);
-    return true;
-}
-
-
-float getFactorFromDistance(float distance)
-{
-    if (distance > 200.f)
-        return 0.f;
-    return pow(1 - pow(distance / 200.f, 0.4), 3);
-}
-
-void main_loop(TarkovGame* tarkov)
-{
-    TarkovESPArray playerarray;
-    initArray(&playerarray, 50);
     Display    * display = XOpenDisplay( 0 ) ;
     const char * xserver = getenv( "DISPLAY" ) ;
 
@@ -92,7 +50,7 @@ void main_loop(TarkovGame* tarkov)
     attr.background_pixmap = None ;
     attr.border_pixel      = 0 ;
     win = XCreateWindow(    display, DefaultRootWindow(display),
-                            0, 0, 1920, 1080, // x,y,width,height : are possibly opverwriteen by window manager
+                            50, 300, 400, 100, // x,y,width,height : are possibly opverwriteen by window manager
                             0,
                             visualinfo.depth,
                             InputOutput,
@@ -108,8 +66,8 @@ void main_loop(TarkovGame* tarkov)
     // say window manager which position we would prefer
     XSizeHints sizehints ;
     sizehints.flags = PPosition | PSize ;
-    sizehints.x     = 0 ;  sizehints.y = 0 ;
-    sizehints.width = 1920 ; sizehints.height = 1080 ;
+    sizehints.x     = 50 ;  sizehints.y = 300 ;
+    sizehints.width = 400 ; sizehints.height = 100 ;
     XSetWMNormalHints( display, win, &sizehints ) ;
     // Switch On >> If user pressed close key let window manager only send notification >>
     Atom wm_delete_window = XInternAtom( display, "WM_DELETE_WINDOW", 0) ;
@@ -119,8 +77,8 @@ void main_loop(TarkovGame* tarkov)
         // change foreground color to brown
         XColor    xcol ;
         xcol.red   = 153 * 256 ;   // X11 uses 16 bit colors !
-        xcol.green = 0 * 256 ;
-        xcol.blue  = 0  * 256 ;
+        xcol.green = 116 * 256 ;
+        xcol.blue  = 65  * 256 ;
         XAllocColor( display, attr.colormap, &xcol) ;
         XGCValues gcvalues ;
         gcvalues.foreground = xcol.pixel ;
@@ -183,32 +141,6 @@ void main_loop(TarkovGame* tarkov)
         }
 
         // ... all events processed, now do other stuff ...
-        bool ret = tarkov->Tick();
-        if (!ret)
-            break;
-
-        GetTarkovPlayers(tarkov, &playerarray, 1920, 1080);
-        glClearColor( 0., 0., 0., 0) ;
-        glClear(GL_COLOR_BUFFER_BIT) ;
-        glXSwapBuffers( display, win) ;
-        glXWaitGL() ;
-        for (int i = 0; i < playerarray.used; i++)
-        {
-            TarkovESPObject Player = playerarray.array[i];
-            char buf[100];
-            sprintf(buf, "%s (%5.2fm)", Player.IsScavPlayer ? "Player Scav" : Player.pName, Player.inGameDistance);
-            std::string buff = buf; // ugly
-            if (!Player.render)
-                continue;
-            XRectangle rect;
-            rect.width=300*getFactorFromDistance(Player.inGameDistance);
-            rect.height=1000*getFactorFromDistance(Player.inGameDistance);
-            rect.x=(Player.x + 1920) / 2 - rect.width / 2;
-            rect.y=  (-Player.y + 1080)/2 - rect.height / 2;
-
-            XDrawString( display, win, gc, rect.x, rect.y, buff.c_str(), buff.length()) ;
-            XDrawRectangles(display, win, gc, &rect, 1);
-        }
 
         if (isRedraw)
         {  // needs redraw
@@ -216,10 +148,11 @@ void main_loop(TarkovGame* tarkov)
             glClearColor( 0., 0., 0., 0) ;
             glClear(GL_COLOR_BUFFER_BIT) ;
             glXSwapBuffers( display, win) ;
-            glXWaitGL();
+            glXWaitGL() ;
+            // draw string with X11
+            XDrawString( display, win, gc, 10, 20, "Hello ! ", 7) ;
         }
-        XClearWindow(display, win);
-        XFlush(display);
+
         // ... do something else ...
 
     }
@@ -228,28 +161,6 @@ void main_loop(TarkovGame* tarkov)
     win = 0 ;
     XCloseDisplay( display ) ;
     display = 0 ;
-}
 
-
-int main()
-{
-//    render();
-//    IVSHMEM shm;
-//    if (!prepare_ivshmem(&shm))
-//    {
-//        DEBUG_ERROR("Failed to prepare IVSHMEM");
-//        return 1;
-//    }
-    TarkovGame *Tarkov;
-    while (!GetTarkovGame(&Tarkov, "EscapeFromTarkov.exe", "UnityPlayer.dll"))
-    {
-        DEBUG_ERROR("Failed to find Tarkov");
-        std::this_thread::sleep_for(2s);
-    }
-//    while (!TarkovInGame(Tarkov))
-//    {
-//        DEBUG_INFO("Waiting for game to start");
-//        std::this_thread::sleep_for(2s);
-//    }
-    main_loop(Tarkov);
+    return 0 ;
 }

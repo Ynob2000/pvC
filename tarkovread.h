@@ -20,10 +20,12 @@ typedef struct
 {
     char pName[100];
     float x, y;
+    float xHead, yHead;
     float distance;
     float inGameDistance;
     bool render;
     bool IsScav;
+    bool IsScavPlayer;
 }TarkovESPObject;
 
 typedef struct
