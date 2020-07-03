@@ -26,6 +26,7 @@ typedef struct
     bool render;
     bool IsScav;
     bool IsScavPlayer;
+    bool IsItem;
 }TarkovESPObject;
 
 typedef struct

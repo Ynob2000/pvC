@@ -175,11 +175,12 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
             continue;
         Object.x = ScreenPos->x;
         Object.y = ScreenPos->y;
-        Object.xHead = HeadScreenPos->x;
-        Object.yHead = HeadScreenPos->y;
+        Object.xHead = ScreenPos->x;
+        Object.yHead = ScreenPos->y;
         Object.inGameDistance = distance;
         Object.IsScav = Player.IsScav();
         Object.IsScavPlayer = Player.IsPlayerScav();
+        Object.IsItem = false;
         Object.distance = (CameraPosition - PlayerPosition).length();
 
         insertArray(a, Object);
@@ -197,7 +198,8 @@ void GetTarkovLoot(TarkovGame *Tarkov, TarkovESPArray *a, float width, float hei
     Vector3f CameraPosition = Tarkov->GetCameraLocation();
     std::vector<TarkovLootItem*> Items = Tarkov->GetLootList();
 
-    clearArray(a);
+    // do not clear array as there's players in it
+    //clearArray(a);
 
     TarkovPlayer* pMyself = Tarkov->GetLocalPlayer();
     if (pMyself == nullptr)
@@ -221,12 +223,19 @@ void GetTarkovLoot(TarkovGame *Tarkov, TarkovESPArray *a, float width, float hei
             continue;
         bool Render = WorldToScreen(CameraMatrix, LootLocation, *ScreenPos, width, height);
         *ScreenPos += *LocalScreenPos;
+        if (!Render)
+            continue;
 
         TarkovESPObject Object;
         strcpy(Object.pName, Item.GetLootName().c_str());
         Object.render = Render;
         Object.x = ScreenPos->x;
         Object.y = ScreenPos->y;
+        Object.xHead = Object.x;
+        Object.yHead = Object.y;
+        Object.IsScav = false;
+        Object.IsScavPlayer = false;
+        Object.IsItem = true;
         Object.inGameDistance = distance;
         Object.distance = (CameraPosition - LootLocation).length();
 
