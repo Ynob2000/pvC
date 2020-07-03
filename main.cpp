@@ -52,8 +52,8 @@ float getFactorFromDistance(float distance)
 }
 
 void main_loop_win(TarkovGame* tarkov, IVSHMEM* shm) {
-    TarkovESPArray playerarray;
-    initArray(&playerarray, 50);
+    TarkovESPArray dataarray;
+    initArray(&dataarray, 100);
     while (true)
     {
         // ... all events processed, now do other stuff ...
@@ -61,8 +61,9 @@ void main_loop_win(TarkovGame* tarkov, IVSHMEM* shm) {
         if (!ret)
             break;
 
-        GetTarkovPlayers(tarkov, &playerarray, 1920, 1080);
-        send_data(shm, &playerarray);
+        GetTarkovPlayers(tarkov, &dataarray, 1920, 1080);
+        GetTarkovLoot(tarkov, &dataarray, 1920, 1080);
+        send_data(shm, &dataarray);
     }
 }
 

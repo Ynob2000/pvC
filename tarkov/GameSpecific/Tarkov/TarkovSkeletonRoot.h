@@ -21,11 +21,11 @@ public:
         return GameProcess->Read<uint64_t>(Address + 0x28);
     }
 
-    Vector3f GetLocationMatrixTest()
+    Vector3f GetLocationMatrixTest(int bone_id = 0)
     {
         uint64_t m_BoneEnum = getBoneEnum();
         uint64_t m_TransformArray = GameProcess->Read<uint64_t>(m_BoneEnum + 0x10);
-        uint64_t m_TransformA = GameProcess->Read<uint64_t>(m_TransformArray + 0x20);
+        uint64_t m_TransformA = GameProcess->Read<uint64_t>(m_TransformArray + 0x20 + (bone_id * 0x8));
         uint64_t m_internalTransformA = GameProcess->Read<uint64_t>(m_TransformA + 0x10);
         uint64_t m_transformAccessReadOnlyData = GameProcess->Read<uint64_t>(m_internalTransformA + 0x38);
 

@@ -163,7 +163,7 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
         bool Render = WorldToScreen(CameraMatrix, PlayerPosition + Offset, *ScreenPos, width, height);
         *ScreenPos += *LocalScreenPos;
 
-        Vector3f headPosition = Player.GetPlayerBody().GetPlayerBones().GetHeadPosition();
+        Vector3f headPosition = Player.GetPlayerBody().GetSkeletonRoot().GetLocationMatrixTest(133);
 
         WorldToScreen(CameraMatrix, headPosition + Offset, *HeadScreenPos, width, height);
         *HeadScreenPos += *LocalScreenPos;
@@ -180,6 +180,7 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
         Object.inGameDistance = distance;
         Object.IsScav = Player.IsScav();
         Object.IsScavPlayer = Player.IsPlayerScav();
+        Object.IsItem = false;
         Object.distance = (CameraPosition - PlayerPosition).length();
 
         insertArray(a, Object);
@@ -197,7 +198,8 @@ void GetTarkovLoot(TarkovGame *Tarkov, TarkovESPArray *a, float width, float hei
     Vector3f CameraPosition = Tarkov->GetCameraLocation();
     std::vector<TarkovLootItem*> Items = Tarkov->GetLootList();
 
-    clearArray(a);
+    // do not clear array as there's players in it
+    //clearArray(a);
 
     TarkovPlayer* pMyself = Tarkov->GetLocalPlayer();
     if (pMyself == nullptr)
@@ -221,12 +223,17 @@ void GetTarkovLoot(TarkovGame *Tarkov, TarkovESPArray *a, float width, float hei
             continue;
         bool Render = WorldToScreen(CameraMatrix, LootLocation, *ScreenPos, width, height);
         *ScreenPos += *LocalScreenPos;
+        if (!Render)
+            continue;
 
         TarkovESPObject Object;
         strcpy(Object.pName, Item.GetLootName().c_str());
         Object.render = Render;
         Object.x = ScreenPos->x;
         Object.y = ScreenPos->y;
+        Object.IsScav = false;
+        Object.IsScavPlayer = false;
+        Object.IsItem = true;
         Object.inGameDistance = distance;
         Object.distance = (CameraPosition - LootLocation).length();
 

@@ -42,9 +42,9 @@ public:
 
         bool IsPlayerCorpse = LootName.find("Observed_PlayerSuperior") != std::string::npos;
         bool IsCorpse = LootName.find("LootCorpse_PlayerSuperior") != std::string::npos;
-        bool IsScavCorpse = LootName.find("Bot") != std::string::npos;
+        //bool IsScavCorpse = LootName.find("Bot") != std::string::npos;
 
-        return IsPlayerCorpse || IsCorpse || IsScavCorpse;
+        return IsPlayerCorpse || IsCorpse;
     }
 
     bool IsHighValue()

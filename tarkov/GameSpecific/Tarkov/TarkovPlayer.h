@@ -56,7 +56,7 @@ public:
 
     TarkovPlayerProfile GetPlayerProfile()
     {
-        return TarkovPlayerProfile(GameProcess, GameProcess->Read<uint64_t>(Address + 0x3D0));
+        return TarkovPlayerProfile(GameProcess, GameProcess->Read<uint64_t>(Address + 0x3E0));
     }
 
     TarkovHandsController GetPlayerHandsController()
