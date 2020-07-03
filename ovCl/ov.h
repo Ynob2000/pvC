@@ -20,6 +20,7 @@ typedef struct
 	bool render;
 	bool isS;
 	bool isSP;
+	bool isI;
 } data;
 
 typedef struct

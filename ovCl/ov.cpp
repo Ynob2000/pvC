@@ -207,11 +207,15 @@ void Menu::RenderMenu(const std::vector<data>& ds)
 			{
 				color = ImGui::GetColorU32({ 255 / 255.0f, 255 / 255.0f, 0 / 255.0f, 255 / 255.0f });
 			}
+			else if (p.isI)
+			{
+				color = ImGui::GetColorU32({ 0 / 255.0f, 125 / 255.0f, 255 / 255.0f, 255 / 255.0f });
+			}
 			else
 			{
 				color = ImGui::GetColorU32({ 255 / 255.0f, 0, 0, 255 / 255.0f });
 			}
-			ImGui::GetOverlayDrawList()->AddText(ImGui::GetFont(), 10 + 30 * getFactorFromDistance(p.inGameDistance), ImVec2(realX + 1, realY + 1), color, label.c_str());
+			ImGui::GetOverlayDrawList()->AddText(ImGui::GetFont(), 13 + 30 * getFactorFromDistance(p.inGameDistance), ImVec2(realX + 1, realY + 1), color, label.c_str());
 			ImGui::GetOverlayDrawList()->AddCircle(ImVec2(realX, realY), radius * getFactorFromDistance(p.inGameDistance),
 				color);
 		}
@@ -283,7 +287,7 @@ void Menu::Setup(HWND* win)
 		return;
 	}
 
-	SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
+	SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED | WS_EX_TRANSPARENT);
 	SetLayeredWindowAttributes(hwnd, 0, 1.0f, LWA_ALPHA);
 	SetLayeredWindowAttributes(hwnd, 0, RGB(0, 0, 0), LWA_COLORKEY);
 
