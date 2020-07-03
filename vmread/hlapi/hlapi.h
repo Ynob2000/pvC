@@ -195,6 +195,11 @@ class WinProcess
 		return ret;
 	}
 
+	void ReadRaw(void* dest, uint64_t address, size_t size)
+    {
+        VMemRead(&ctx->process, proc.dirBase, (uint64_t)dest, address, size);
+    }
+
 	template<typename T>
 	void Write(uint64_t address, const T& value)
 	{

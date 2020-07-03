@@ -163,7 +163,7 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
         bool Render = WorldToScreen(CameraMatrix, PlayerPosition + Offset, *ScreenPos, width, height);
         *ScreenPos += *LocalScreenPos;
 
-        Vector3f headPosition = Player.GetPlayerBody().GetSkeletonRoot().GetLocationMatrixTest(133);
+        Vector3f headPosition = Player.GetPlayerBody().GetPlayerBones().GetHeadPosition();
 
         WorldToScreen(CameraMatrix, headPosition + Offset, *HeadScreenPos, width, height);
         *HeadScreenPos += *LocalScreenPos;
@@ -175,8 +175,8 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
             continue;
         Object.x = ScreenPos->x;
         Object.y = ScreenPos->y;
-        Object.xHead = HeadScreenPos->x;
-        Object.yHead = HeadScreenPos->y;
+        Object.xHead = ScreenPos->x;
+        Object.yHead = ScreenPos->y;
         Object.inGameDistance = distance;
         Object.IsScav = Player.IsScav();
         Object.IsScavPlayer = Player.IsPlayerScav();
@@ -231,6 +231,8 @@ void GetTarkovLoot(TarkovGame *Tarkov, TarkovESPArray *a, float width, float hei
         Object.render = Render;
         Object.x = ScreenPos->x;
         Object.y = ScreenPos->y;
+        Object.xHead = Object.x;
+        Object.yHead = Object.y;
         Object.IsScav = false;
         Object.IsScavPlayer = false;
         Object.IsItem = true;
