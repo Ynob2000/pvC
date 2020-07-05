@@ -204,7 +204,7 @@ void Menu::RenderMenu(const std::vector<data>& ds)
 			float realY2 = (-p.y2 + 1080) / 2;
 			if (realX == realY && realX == 0)
 				continue;
-			float radius = 50;
+			float radius = 20;
 			ImU32 color;
 			if (p.isS)
 			{
@@ -221,6 +221,18 @@ void Menu::RenderMenu(const std::vector<data>& ds)
 			ImGui::GetOverlayDrawList()->AddText(ImGui::GetFont(), 13 + 30 * getFactorFromDistance(p.inGameDistance), ImVec2(realX2 + 1, realY2 + 1), color, label.c_str());
 			ImGui::GetOverlayDrawList()->AddCircle(ImVec2(realX2, realY2), radius * getFactorFromDistance(p.inGameDistance),
 				color);
+
+			if (p.drawB)
+			{
+				for (int i = 0; i < 10; ++i)
+				{
+					float b1X = (p.bones[i].first.x + 1920) / 2;
+					float b1Y = (-p.bones[i].first.y + 1080) / 2;
+					float b2X = (p.bones[i].second.x + 1920) / 2;
+					float b2Y = (-p.bones[i].second.y + 1080) / 2;
+					ImGui::GetOverlayDrawList()->AddLine(ImVec2(b1X, b1Y), ImVec2(b2X, b2Y), color);
+				}
+			}
 		}
 	}
 	End();

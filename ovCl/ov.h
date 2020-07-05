@@ -10,6 +10,16 @@
 #include <vector>
 #pragma comment(lib, "d3d11.lib") 
 
+template<typename T>
+class Vector2
+{
+public:
+	T x;
+	T y;
+};
+
+typedef class Vector2<float> Vector2f;
+
 typedef struct
 {
 	char pName[100];
@@ -21,6 +31,8 @@ typedef struct
 	bool isS;
 	bool isSP;
 	bool isI;
+	bool drawB;
+	std::pair<Vector2f, Vector2f> bones[10];
 } data;
 
 typedef struct
