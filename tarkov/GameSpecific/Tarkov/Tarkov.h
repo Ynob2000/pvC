@@ -63,7 +63,7 @@ public:
         ModuleBase = InModuleBase;
 
         GOM = GameObjectManager(GameProcess, GameProcess->Read<uint64_t>(ModuleBase + Offsets.GameObjectManager));
-        LGW = GOM.FindGameObjectActive<TarkovGameWorld>("GameWorld");
+        LGW = GOM.FindGameObjectActive("GameWorld");
         FPCamera = GOM.FindGameObjectTagged<TarkovFPSCamera>("FPS Camera");
 
         Status = GameStatus();
@@ -87,8 +87,8 @@ public:
         if (!Status.IsGamePlaying())
         {
             GOM = GameObjectManager(GameProcess, GameProcess->Read<uint64_t>(ModuleBase + Offsets.GameObjectManager));
-            if (!LGW.IsValid)
-                LGW = GOM.FindGameObjectActive<TarkovGameWorld>("GameWorld");
+            if (!LGW.IsValid && LGW.GetPlayerCount() == 0)
+                LGW = GOM.FindGameObjectActive("GameWorld");
 
             if (!FPCamera.IsValid)
                 FPCamera = GOM.FindGameObjectTagged<TarkovFPSCamera>("FPS Camera");

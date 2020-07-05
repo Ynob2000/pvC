@@ -1,6 +1,7 @@
 #pragma once
 #include "Includes.h"
 #include "BaseObject.h"
+#include "GameSpecific/Tarkov/TarkovGameWorld.h"
 
 class GameObjectManager
 {
@@ -19,8 +20,7 @@ public:
         Address = 0x0;
     }
 
-    template<class Type>
-    Type FindGameObjectActive(const char* Object)
+    TarkovGameWorld FindGameObjectActive(const char* Object)
     {
         int32_t LoopDetector = 0;
         for (BaseObject ActiveObject = GetFirstActiveObject(); ActiveObject.Address != GetLastActiveObject().Address; ActiveObject = ActiveObject.GetNextBaseObject())
@@ -32,11 +32,14 @@ public:
             std::string ActiveObjectName = ActiveObject.GetGameObject().GetGameObjectName();
             if (ActiveObjectName.find(Object) != std::string::npos)
             {
+                TarkovGameWorld out = TarkovGameWorld(GameProcess, ActiveObject.GetGameObject());
+                if (out.GetPlayerCount() == 0)
+                    continue;
                 printf("%s found.\n", Object);
-                return Type(GameProcess, ActiveObject.GetGameObject());
+                return out;
             }
         }
-        return Type();
+        return TarkovGameWorld();
     }
 
     template<class Type>

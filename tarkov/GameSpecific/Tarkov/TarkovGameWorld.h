@@ -27,8 +27,8 @@ public:
     int32_t GetPlayerCount()
     {
         uint64_t m_pPlayerList = GameProcess->Read<uint64_t>(Address + 0x78);
-
-        return GameProcess->Read<int32_t>(m_pPlayerList + 0x18);
+        int32_t playerCount = GameProcess->Read<int32_t>(m_pPlayerList + 0x18);
+        return playerCount;
     }
 
     std::vector<TarkovPlayer*> GetAllPlayers()

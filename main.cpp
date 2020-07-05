@@ -68,7 +68,7 @@ void main_loop_win(TarkovGame* tarkov, IVSHMEM* shm) {
             break;
 
         GetTarkovPlayers(tarkov, &dataarray, 1920, 1080, use_aimbot(shm));
-        GetTarkovLoot(tarkov, &dataarray, 1920, 1080);
+    //    GetTarkovLoot(tarkov, &dataarray, 1920, 1080);
         send_data(shm, &dataarray);
     }
 }
