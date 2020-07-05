@@ -24,10 +24,7 @@ typedef struct
     float xHead, yHead;
     float distance;
     float inGameDistance;
-    bool render;
-    bool IsScav;
-    bool IsScavPlayer;
-    bool IsItem;
+    float r, g, b;
     bool drawBones;
     std::pair<Vector2f, Vector2f> bones[10];
 }TarkovESPObject;
@@ -52,5 +49,5 @@ EXTERNC void insertArray(TarkovESPArray *a, TarkovESPObject element);
 EXTERNC void clearArray(TarkovESPArray *a);
 EXTERNC void freeArray(TarkovESPArray *a);
 
-EXTERNC void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float height);
+EXTERNC void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float height, bool use_aimbot);
 EXTERNC void GetTarkovLoot(TarkovGame *Tarkov, TarkovESPArray *a, float width, float height);

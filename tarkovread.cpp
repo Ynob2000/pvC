@@ -175,7 +175,7 @@ void fillBones(const Matrix4f& CameraMatrix, TarkovPlayerBones& playerBones, Tar
 }
 
 
-void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float height)
+void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float height, bool use_aimbot)
 {
     WinProcess* GameProcess = Tarkov->GetWinProc();
     Matrix4f CameraMatrix = Tarkov->GetCameraMatrix();
@@ -192,6 +192,7 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
     if (pMyself == nullptr)
         return;
     TarkovPlayer myself = *pMyself;
+    std::string myGroupId = myself.GetPlayerProfile().GetPlayerInfo().GetGroupID().GetString();
     Vector3f myPosition = myself.GetPlayerBody().GetSkeletonRoot().GetLocationMatrixTest();
 
     TarkovMovementContext movement = myself.GetMovementContext();
@@ -233,10 +234,12 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
         TarkovPlayerBones playerBones = Player.GetPlayerBody().GetPlayerBones();
         TarkovSkeletonRoot skeletonRoot = Player.GetPlayerBody().GetSkeletonRoot();
         Vector3f headPosition = playerBones.GetHeadPosition();
-        if (distance < 150.f)
+        std::string groupId = Player.GetPlayerProfile().GetPlayerInfo().GetGroupID().GetString();
+        bool is_friend = groupId == myGroupId;
+        if (distance < 150.f && use_aimbot) //&& !is_friend)
         {
-            Vector3f aimAngle = CalculateAngle( myPosition, headPosition );
-            fov = AngleFOV( localView, aimAngle );
+            Vector3f aimAngle = CalculateAngle( myself.GetPlayerBody().GetSkeletonRoot().GetLocationMatrixTest(133), headPosition );
+            fov = AngleFOV( localView, aimAngle ) / distance;
             if( fov < bestFov){
                 bestFov = fov;
                 chosenPlayer = Player.Address;
@@ -249,15 +252,30 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
 
         TarkovESPObject Object;
         strcpy(Object.pName, (Player.IsScav() ? Player.IsPlayerScav() ? "Player Scav" : "Scav" : Player.GetPlayerProfile().GetPlayerInfo().GetPlayerName().GetString()).c_str());
-        Object.render = Render;
+        if (Player.IsScav())
+        {
+            Object.r = 255 / 255.f;
+            Object.g = 255 / 255.f;
+            Object.b = 0 / 255.f;
+        } else
+        {
+            if (groupId == myGroupId)
+            {
+                Object.r = 0 / 255.f;
+                Object.g = 255 / 255.f;
+                Object.b = 0 / 255.f;
+            } else
+            {
+                Object.r = 255 / 255.f;
+                Object.g = 0 / 255.f;
+                Object.b = 0 / 255.f;
+            }
+        }
         Object.x = ScreenPos->x;
         Object.y = ScreenPos->y;
         Object.xHead = HeadScreenPos->x;
         Object.yHead = HeadScreenPos->y;
         Object.inGameDistance = distance;
-        Object.IsScav = Player.IsScav();
-        Object.IsScavPlayer = Player.IsPlayerScav();
-        Object.IsItem = false;
         Object.distance = (CameraPosition - PlayerPosition).length();
         Object.drawBones = false;
 
@@ -276,8 +294,8 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
         return;
     }
 
-//    GameProcess->Write<Vector2f>( movement.Address + 0x1E0,
-//                                  Vector2f(chosenPlayerAngle.x, chosenPlayerAngle.y) );
+    GameProcess->Write<Vector2f>( movement.Address + 0x1d8,
+                                  Vector2f(chosenPlayerAngle.x, chosenPlayerAngle.y) );
 }
 
 
@@ -318,14 +336,13 @@ void GetTarkovLoot(TarkovGame *Tarkov, TarkovESPArray *a, float width, float hei
 
         TarkovESPObject Object;
         strcpy(Object.pName, Item.GetLootName().c_str());
-        Object.render = Render;
+        Object.r = 0 / 255.f;
+        Object.g = 125 / 255.f;
+        Object.b = 255 / 255.f;
         Object.x = ScreenPos->x;
         Object.y = ScreenPos->y;
         Object.xHead = Object.x;
         Object.yHead = Object.y;
-        Object.IsScav = false;
-        Object.IsScavPlayer = false;
-        Object.IsItem = true;
         Object.inGameDistance = distance;
         Object.distance = (CameraPosition - LootLocation).length();
         Object.drawBones = false;

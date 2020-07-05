@@ -32,6 +32,12 @@ void send_data(IVSHMEM* shm, TarkovESPArray* data)
     }
 }
 
+bool use_aimbot(IVSHMEM* shm)
+{
+    void* memory = shm->mem;
+    return *(char*)((uintptr_t)memory + 0x123456) == 'Y';
+}
+
 bool prepare_ivshmem(IVSHMEM* shm)
 {
     ivshmemOptionsInit();
@@ -61,7 +67,7 @@ void main_loop_win(TarkovGame* tarkov, IVSHMEM* shm) {
         if (!ret)
             break;
 
-        GetTarkovPlayers(tarkov, &dataarray, 1920, 1080);
+        GetTarkovPlayers(tarkov, &dataarray, 1920, 1080, use_aimbot(shm));
         GetTarkovLoot(tarkov, &dataarray, 1920, 1080);
         send_data(shm, &dataarray);
     }
@@ -188,27 +194,27 @@ void main_loop(TarkovGame* tarkov)
         if (!ret)
             break;
 
-        GetTarkovPlayers(tarkov, &playerarray, 1920, 1080);
+        GetTarkovPlayers(tarkov, &playerarray, 1920, 1080, false);
         glClearColor( 0., 0., 0., 0) ;
         glClear(GL_COLOR_BUFFER_BIT) ;
         glXSwapBuffers( display, win) ;
         glXWaitGL() ;
         for (int i = 0; i < playerarray.used; i++)
         {
-            TarkovESPObject Player = playerarray.array[i];
-            char buf[100];
-            sprintf(buf, "%s (%5.2fm)", Player.IsScavPlayer ? "Player Scav" : Player.pName, Player.inGameDistance);
-            std::string buff = buf; // ugly
-            if (!Player.render)
-                continue;
-            XRectangle rect;
-            rect.width=300*getFactorFromDistance(Player.inGameDistance);
-            rect.height=1000*getFactorFromDistance(Player.inGameDistance);
-            rect.x=(Player.x + 1920) / 2 - rect.width / 2;
-            rect.y=  (-Player.y + 1080)/2 - rect.height / 2;
-
-            XDrawString( display, win, gc, rect.x, rect.y, buff.c_str(), buff.length()) ;
-            XDrawRectangles(display, win, gc, &rect, 1);
+//            TarkovESPObject Player = playerarray.array[i];
+//            char buf[100];
+//            sprintf(buf, "%s (%5.2fm)", Player.IsScavPlayer ? "Player Scav" : Player.pName, Player.inGameDistance);
+//            std::string buff = buf; // ugly
+//            if (!Player.render)
+//                continue;
+//            XRectangle rect;
+//            rect.width=300*getFactorFromDistance(Player.inGameDistance);
+//            rect.height=1000*getFactorFromDistance(Player.inGameDistance);
+//            rect.x=(Player.x + 1920) / 2 - rect.width / 2;
+//            rect.y=  (-Player.y + 1080)/2 - rect.height / 2;
+//
+//            XDrawString( display, win, gc, rect.x, rect.y, buff.c_str(), buff.length()) ;
+//            XDrawRectangles(display, win, gc, &rect, 1);
         }
 
         if (isRedraw)

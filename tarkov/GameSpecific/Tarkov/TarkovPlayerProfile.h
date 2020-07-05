@@ -30,4 +30,5 @@ public:
     {
         return TarkovPlayerHealth(GameProcess, GameProcess->Read<uint64_t>(Address + 0x40));
     }
+
 };

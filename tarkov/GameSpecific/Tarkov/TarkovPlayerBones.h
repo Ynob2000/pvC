@@ -34,12 +34,12 @@ public:
 
     Vector3f GetLeftShoulderPosition()
     {
-        return GetBodyPartPosition(0xe0, false);
+        return GetBodyPartPosition(0xe0, true);
     }
 
     Vector3f GetRightShoulderPosition()
     {
-        return GetBodyPartPosition(0xe8, false);
+        return GetBodyPartPosition(0xe8, true);
     }
 
     Vector3f GetNeckPosition()

@@ -66,6 +66,6 @@ void Aim(WinProcess* GameProcess, std::vector<TarkovPlayer*>& playerList, Tarkov
         return;
     }
 
-    GameProcess->Write<Vector2f>( movement.Address + 0x1E0,
+    GameProcess->Write<Vector2f>( movement.Address + 0x1d0,
             Vector2f(chosenPlayerAngle.x, chosenPlayerAngle.y) );
 }
