@@ -190,6 +190,7 @@ void Menu::RenderMenu(const std::vector<data>& ds)
 	static const auto dwFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar;
 	Begin("o", 0, dwFlags);
 	{
+		ImGui::GetOverlayDrawList()->AddCircle(ImVec2(0, 0), 3, ImGui::GetColorU32({ 238 / 255.0f, 130 / 255.0f, 238 / 255.0f, 255 / 255.0f }));
 		for (auto p : ds)
 		{
 			if (p.inGameDistance == 0)
