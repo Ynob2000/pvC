@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include <vmath.h>
 
 #if __cplusplus
 #define EXTERNC extern "C"
@@ -27,6 +28,8 @@ typedef struct
     bool IsScav;
     bool IsScavPlayer;
     bool IsItem;
+    bool drawBones;
+    std::pair<Vector2f, Vector2f> bones[10];
 }TarkovESPObject;
 
 typedef struct

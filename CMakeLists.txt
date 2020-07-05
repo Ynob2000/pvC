@@ -30,7 +30,7 @@ set(SOURCES
         vmread/hlapi/winprocesslist.cpp
         vmath/src/vmath.cpp
         tarkov/Includes.cpp
-        render.cpp render.h)
+        render.cpp render.h tarkov/GameSpecific/Tarkov/aimbot.h)
 
 
 add_executable(privateCheese ${SOURCES}

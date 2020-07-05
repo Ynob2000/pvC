@@ -59,6 +59,15 @@ public:
         return TarkovPlayerProfile(GameProcess, GameProcess->Read<uint64_t>(Address + 0x3D0));
     }
 
+    void infiniteStam()
+    {
+        uint64_t physical = GameProcess->Read<uint64_t>(Address + 0x3E0);
+        uint64_t stamina = GameProcess->Read<uint64_t>(physical + 0x28);
+        uint64_t handsStamina = GameProcess->Read<uint64_t>(physical + 0x30);
+        GameProcess->Write<float>(stamina + 0x48, 100.f);
+        GameProcess->Write<float>(handsStamina + 0x48, 100.f);
+    }
+
     TarkovHandsController GetPlayerHandsController()
     {
         return TarkovHandsController(GameProcess, GameProcess->Read<uint64_t>(Address + 0x418));
