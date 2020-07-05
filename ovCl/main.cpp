@@ -71,6 +71,14 @@ DWORD WINAPI trt(LPVOID lpParam)
     Menu::Setup(&hwnd);
     while (1)
     {
+        if (GetKeyState(VK_XBUTTON1) & 0x8000) 
+        {
+            memcpy((void*)((uintptr_t)memory + 0x123456), "Y", 1);
+        }
+        else
+        {
+            memcpy((void*)((uintptr_t)memory + 0x123456), "N", 1);
+        }
         render(memory);
     }
     return 0;
