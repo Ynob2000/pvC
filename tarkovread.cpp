@@ -194,6 +194,7 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
     TarkovPlayer myself = *pMyself;
     std::string myGroupId = myself.GetPlayerProfile().GetPlayerInfo().GetGroupID().GetString();
     Vector3f myPosition = myself.GetPlayerBody().GetSkeletonRoot().GetLocationMatrixTest();
+    Vector3f myFireportPosition = myself.GetPlayerHandsController().GetFireportPosition();
 
     TarkovMovementContext movement = myself.GetMovementContext();
 
@@ -235,11 +236,11 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
         TarkovSkeletonRoot skeletonRoot = Player.GetPlayerBody().GetSkeletonRoot();
         Vector3f headPosition = playerBones.GetHeadPosition();
         std::string groupId = Player.GetPlayerProfile().GetPlayerInfo().GetGroupID().GetString();
-        bool is_friend = groupId == myGroupId;
-        if (distance < 150.f && use_aimbot) //&& !is_friend)
+        bool is_friend = false; //(groupId == myGroupId && !Player.IsScav());
+        if (distance < 150.f && use_aimbot) // && !is_friend)
         {
-            Vector3f aimAngle = CalculateAngle( myself.GetPlayerBody().GetSkeletonRoot().GetLocationMatrixTest(133), headPosition );
-            fov = AngleFOV( localView, aimAngle ) / distance;
+            Vector3f aimAngle = CalculateAngle( myFireportPosition, headPosition );
+            fov = AngleFOV( localView, aimAngle );
             if( fov < bestFov){
                 bestFov = fov;
                 chosenPlayer = Player.Address;
@@ -259,7 +260,7 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
             Object.b = 0 / 255.f;
         } else
         {
-            if (groupId == myGroupId)
+            if (is_friend)
             {
                 Object.r = 0 / 255.f;
                 Object.g = 255 / 255.f;
@@ -290,7 +291,7 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
 
     delete LocalScreenPos;
 
-    if( !chosenPlayer || bestFov > 180.0f ){
+    if( !chosenPlayer || bestFov > 10.0f ){
         return;
     }
 

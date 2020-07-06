@@ -87,7 +87,7 @@ public:
         if (!Status.IsGamePlaying())
         {
             GOM = GameObjectManager(GameProcess, GameProcess->Read<uint64_t>(ModuleBase + Offsets.GameObjectManager));
-            if (!LGW.IsValid && LGW.GetPlayerCount() == 0)
+            if (!LGW.IsValid || LGW.GetPlayerCount() == 0)
                 LGW = GOM.FindGameObjectActive("GameWorld");
 
             if (!FPCamera.IsValid)
