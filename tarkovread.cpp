@@ -236,8 +236,8 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
         TarkovSkeletonRoot skeletonRoot = Player.GetPlayerBody().GetSkeletonRoot();
         Vector3f headPosition = playerBones.GetHeadPosition();
         std::string groupId = Player.GetPlayerProfile().GetPlayerInfo().GetGroupID().GetString();
-        bool is_friend = false; //(groupId == myGroupId && !Player.IsScav());
-        if (distance < 150.f && use_aimbot) // && !is_friend)
+        bool is_friend = (groupId == myGroupId && !Player.IsScav());
+        if (distance < 150.f && use_aimbot && !is_friend)
         {
             Vector3f aimAngle = CalculateAngle( myFireportPosition, headPosition );
             fov = AngleFOV( localView, aimAngle );
