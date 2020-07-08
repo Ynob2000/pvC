@@ -1,13 +1,15 @@
-#include "game.h"
-#include "reader.h"
 #include "common/ivshmem_com.h"
 
 #ifdef TARKOV
     #include "tarkov/tarkovread.h"
     #define EXECUTABLE "EscapeFromTarkov.exe"
     #define MODULE_BASE "UnityPlayer.dll"
+    #define READER TarkovReader
 #else
-#include ""
+    #include "dayz/dayzread.h"
+    #define EXECUTABLE "DayZ.exe"
+    #define MODULE_BASE "??.dll"
+    #define READER DayzReader
 #endif
 
 extern "C" {
@@ -49,42 +51,42 @@ bool prepare_ivshmem(IVSHMEM* shm)
     return true;
 }
 
-void main_loop_win(Game* game, IVSHMEM* shm, Reader* reader) {
+void main_loop(READER* reader, IVSHMEM* shm) {
     ESPObjectArray dataarray;
     initArray(&dataarray, 100);
     while (true)
     {
-        bool ret = reader->Tick(game);
+        bool ret = reader->Tick();
         if (!ret)
             break;
 
-        reader->GetPlayers(game, &dataarray, 1920, 1080, use_aimbot(shm));
-        reader->GetLoot(game, &dataarray, 1920, 1080);
+        reader->GetPlayers(&dataarray, 1920, 1080, use_aimbot(shm));
+        reader->GetLoot(&dataarray, 1920, 1080);
         send_data(shm, &dataarray);
     }
 }
 
 int main()
 {
-    IVSHMEM shm;
+    IVSHMEM shm{};
     if (!prepare_ivshmem(&shm))
     {
         DEBUG_ERROR("Failed to prepare IVSHMEM");
         return 1;
     }
-    Game* game;
-    TarkovReader reader;
 
-    while (!reader.GetGame(&game, EXECUTABLE, MODULE_BASE))
+    READER reader;
+
+    while (!reader.GetGame(EXECUTABLE, MODULE_BASE))
     {
-        DEBUG_ERROR("Failed to find Tarkov");
+        DEBUG_ERROR("Failed to find game");
         std::this_thread::sleep_for(2s);
     }
-    while (!reader.InGame(game))
+    while (!reader.InGame())
     {
         DEBUG_INFO("Waiting for game to start");
-        reader.Tick(game);
+        reader.Tick();
         std::this_thread::sleep_for(2s);
     }
-    main_loop_win(game, &shm, &reader);
+    main_loop(&reader, &shm);
 }

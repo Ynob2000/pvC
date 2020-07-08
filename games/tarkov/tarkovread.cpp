@@ -6,81 +6,11 @@
 float MAX_RENDER_DISTANCE = 500.f;
 
 
-bool TarkovReader::GetGame(Game **Tarkov, const char *ProcessName, const char *ModuleName)
+
+
+bool TarkovReader::InGame()
 {
-    FILE *out = stdout;
-    pid_t pid;
-
-#if (LMODE() == MODE_EXTERNAL())
-    FILE *pipe = popen("pidof qemu-system-x86_64", "r");
-    fscanf(pipe, "%d", &pid);
-    pclose(pipe);
-#else
-    out = fopen("/tmp/testr.txt", "w");
-    pid = getpid();
-#endif
-
-    try
-    {
-        //WinContext ctx(pid);
-        WinContext *ctx = new WinContext(pid); /* de-allocation handled in TarkovGame() */
-        ctx->processList.Refresh();
-        //ctx->processList.FindProc(ProcessName);
-
-        fprintf(out, "\nInitializing Game Offsets\n");
-        bool ProcessFound, ModuleFound = false;
-
-        for (auto &i : ctx->processList)
-        {
-            if (!strcasecmp(ProcessName, i.proc.name))
-            {
-                fprintf(out, "Game:\tLooping process %lx:%s\n", i.proc.dirBase, i.proc.name);
-                ProcessFound = true;
-
-                //fprintf(out, "\tExports:\n");
-                for (auto &o : i.modules)
-                {
-                    fprintf(out, "\t%.8lx\t%.8lx\t%lx\t%s\n", o.info.baseAddress, o.info.entryPoint, o.info.sizeOfModule, o.info.name);
-                    if (!strcmp(ModuleName, o.info.name))
-                    {
-                        ModuleFound = true;
-                        *Tarkov = new TarkovGame(ctx, &i, o.info.baseAddress);
-                        return true;
-                    }
-                }
-            }
-        }
-
-        if (ProcessFound == false)
-            fprintf(out, "Error finding process: %s\n", ProcessName);
-
-        if (ModuleFound == false)
-            fprintf(out, "Error finding module: %s\n", ModuleName);
-    }
-    catch (VMException &e)
-    {
-        fprintf(out, "Initialization error: %d\n", e.value);
-    }
-
-    return false;
-}
-
-void TarkovReader::DestroyGame(Game *TarkovGame)
-{
-    delete TarkovGame;
-}
-
-bool TarkovReader::Tick(Game *Tarkov)
-{
-    if (Tarkov == nullptr)
-        return false;
-
-    return ((TarkovGame *)Tarkov)->Tick();
-}
-
-bool TarkovReader::InGame(Game *Tarkov)
-{
-    return ((TarkovGame *)Tarkov)->GetGameStatus().IsGamePlaying();
+    return this->game->GetGameStatus().IsGamePlaying();
 }
 
 void TarkovReader::fillBones(const Matrix4f& CameraMatrix, TarkovPlayerBones& playerBones, TarkovSkeletonRoot& skeletonRoot,
@@ -137,9 +67,8 @@ void TarkovReader::fillBones(const Matrix4f& CameraMatrix, TarkovPlayerBones& pl
 }
 
 
-void TarkovReader::GetPlayers(Game *Tarkov, ESPObjectArray *a, float width, float height, bool use_aimbot)
+void TarkovReader::GetPlayers(ESPObjectArray *a, float width, float height, bool use_aimbot)
 {
-    TarkovGame* game = (TarkovGame*)Tarkov;
     WinProcess* GameProcess = game->GetWinProc();
     Matrix4f CameraMatrix = game->GetCameraMatrix();
     Vector3f CameraPosition = game->GetCameraLocation();
@@ -147,7 +76,7 @@ void TarkovReader::GetPlayers(Game *Tarkov, ESPObjectArray *a, float width, floa
 
     clearArray(a);
 
-    Vector2f *LocalScreenPos = new Vector2f;
+    auto *LocalScreenPos = new Vector2f;
     WorldToScreen(CameraMatrix, CameraPosition, *LocalScreenPos, width, height);
     Vector3f meme;
 
@@ -264,9 +193,8 @@ void TarkovReader::GetPlayers(Game *Tarkov, ESPObjectArray *a, float width, floa
 
 
 
-void TarkovReader::GetLoot(Game *Tarkov, ESPObjectArray *a, float width, float height)
+void TarkovReader::GetLoot(ESPObjectArray *a, float width, float height)
 {
-    TarkovGame* game = (TarkovGame*)Tarkov;
     Matrix4f CameraMatrix = game->GetCameraMatrix();
     Vector3f CameraPosition = game->GetCameraLocation();
     std::vector<TarkovLootItem*> Items = game->GetLootList();
