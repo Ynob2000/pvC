@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(lg_common LANGUAGES C)
+project(lg_common LANGUAGES C CXX)
 
 include_directories(
 	${PROJECT_SOURCE_DIR}/include
@@ -16,6 +16,7 @@ set(COMMON_SOURCES
   src/stringlist.c
   src/option.c
   src/framebuffer.c
+  src/ivshmem_com.cpp
 )
 
 add_library(lg_common STATIC ${COMMON_SOURCES})
