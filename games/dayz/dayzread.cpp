@@ -10,21 +10,25 @@ bool DayzReader::InGame()
 
 void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool use_aimbot)
 {
+    clearArray(a);
     for (uint64_t Entity : game->GetAllEntityes()) // all players
     {
         Vector3f worldPosition = game->GetCoordinate(Entity);
-        Vector3f screenPos = game->WorldToScreen(worldPosition);
+        Vector2f screenPos;
+        bool render = game->WorldToScreen(worldPosition, screenPos);
+        if (!render)
+            continue;
 
         float distanceToMe = game->GetDistanceToMe(worldPosition);
-        string playerName = game->GetPlayerName(Entity);
+        string playerName = "player"; //game->GetPlayerName(Entity);
 
-        printf("PlayerName: %s                \n", playerName.c_str());
-        printf("Type: %s                      \n", game->GetTypeName(Entity).c_str());
-        printf("Model: %s                     \n", game->GetModelName(Entity).c_str());
-        printf("Item in Hands: %s             \n", game->GetItemInHands(Entity).c_str());
-        printf("Distance: %.0fm               \n", distanceToMe);
-        printf("Position: %.1f : %.1f : %.1f  \n", worldPosition.x, worldPosition.y, worldPosition.z);
-        printf("ScreenPosition: %.1f : %.1f    \n", screenPos.x, screenPos.y);
+//        printf("PlayerName: %s                \n", playerName.c_str());
+//        printf("Type: %s                      \n", game->GetTypeName(Entity).c_str());
+//        printf("Model: %s                     \n", game->GetModelName(Entity).c_str());
+//        printf("Item in Hands: %s             \n", game->GetItemInHands(Entity).c_str());
+//        printf("Distance: %.0fm               \n", distanceToMe);
+//        printf("Position: %.1f : %.1f : %.1f  \n", worldPosition.x, worldPosition.y, worldPosition.z);
+//        printf("ScreenPosition: %.1f : %.1f    \n", screenPos.x, screenPos.y);
         ESPObject Object;
         strcpy(Object.pName, playerName.c_str());
         Object.r = 255 / 255.f;

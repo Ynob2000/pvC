@@ -1,12 +1,11 @@
 #include "common/ivshmem_com.h"
 
-/*#if defined(TARKOV)
+#if defined(TARKOV)
     #include "tarkov/tarkovread.h"
     #define EXECUTABLE "EscapeFromTarkov.exe"
     #define MODULE_BASE "UnityPlayer.dll"
     #define READER TarkovReader
-#el*/
-#if defined(DAYZ)
+#elif defined(DAYZ)
     #include "dayz/dayzread.h"
     #define EXECUTABLE "DayZ_x64.exe"
     #define MODULE_BASE "DayZ_x64.exe"

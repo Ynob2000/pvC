@@ -121,13 +121,13 @@ public:
     };
     Vector3f GetCoordinate(uint64_t Entity){
         if (Entity == DayzGame::GetLocalPlayer()) {
-            return Vector3f(GameProcess->Read<Vector3f>(
-                    DayzGame::GetLocalPlayerVisualState() + off_visualstate_position));
+            return GameProcess->Read<Vector3f>(
+                    DayzGame::GetLocalPlayerVisualState() + off_visualstate_position);
         }
         else {
-            return  Vector3f(GameProcess->Read<Vector3f>(
+            return  GameProcess->Read<Vector3f>(
                     GameProcess->Read<uint64_t>(
-                            Entity + off_entity_renderervisualstate) + off_visualstate_position));
+                            Entity + off_entity_renderervisualstate) + off_visualstate_position);
         }
     };
     float GetDistanceToMe(Vector3f Entity){
@@ -147,22 +147,25 @@ public:
         return GameProcess->Read<uint64_t>(
                 DayzGame::GetWorld() + off_world_nearanimaltable);
     };
-    uint64_t NearEntityTableSize(){
-        return sizeof(DayzGame::NearEntityTable());
+    int NearEntityTableSize(){
+        return GameProcess->Read<int>(
+                DayzGame::GetWorld() + off_world_nearanimaltable + off_length);
     };
     uint64_t FarEntityTable(){
         return GameProcess->Read<uint64_t>(
                 DayzGame::GetWorld() + off_world_faranimaltable);
     };
-    uint64_t FarEntityTableSize(){
-        return sizeof(DayzGame::FarEntityTable());
+    int FarEntityTableSize(){
+        return GameProcess->Read<int>(
+                DayzGame::GetWorld() + off_world_faranimaltable + off_length);
     };
     uint64_t BulletTable(){
         return GameProcess->Read<uint64_t>(
                 DayzGame::GetWorld() + off_world_bullettable);
     };
     uint64_t BulletTableSize(){
-        return sizeof(DayzGame::BulletTable());
+        return GameProcess->Read<size_t>(
+                DayzGame::BulletTable() + off_length);
     };
     vector<uint64_t> GetAllItems(){
         vector<uint64_t> arrayList;
@@ -191,8 +194,9 @@ public:
     };
     vector<uint64_t> GetAllEntityes(){
         vector<uint64_t> arrayList;
+        int nearEntitySize = DayzGame::NearEntityTableSize();
 
-        for (uint64_t playerId = NULL; playerId < DayzGame::NearEntityTableSize() + 512; ++playerId) {
+        for (int playerId = NULL; playerId < nearEntitySize; ++playerId) {
             if (playerId != 0) { // check if entity != localplayer
                 uint64_t targetentity = DayzGame::GetEntity(DayzGame::NearEntityTable(), playerId);
 
@@ -202,7 +206,7 @@ public:
             }
         }
 
-        for (uint64_t playerId = NULL; playerId < DayzGame::FarEntityTableSize() + 512; ++playerId) {
+        for (int playerId = NULL; playerId < DayzGame::FarEntityTableSize(); ++playerId) {
             uint64_t targetentity = DayzGame::GetEntity(DayzGame::FarEntityTable(), playerId);
 
             if (DayzGame::GetEntityTypeName(targetentity) == "dayzplayer") {
@@ -222,20 +226,23 @@ public:
 
         return arrayList;
     };
-    Vector3f WorldToScreen(Vector3f Position){
+    bool WorldToScreen(const Vector3f& Position, Vector2f& output){
         if (!DayzGame::GetCamera())
-            return Vector3f();
+            return false;
 
         Vector3f temp = Position - DayzGame::GetInvertedViewTranslation();
 
         float x = temp.dotProduct(DayzGame::GetInvertedViewRight());
         float y = temp.dotProduct(DayzGame::GetInvertedViewUp());
         float z = temp.dotProduct(DayzGame::GetInvertedViewForward());
-
-        return Vector3f(
+        if (z < 0.1f)
+            return false;
+        Vector2f res = Vector2f(
                 DayzGame::GetViewportSize().x * (1 + (x / DayzGame::GetProjectionD1().x / z)),
-                DayzGame::GetViewportSize().y * (1 - (y / DayzGame::GetProjectionD2().y / z)),
-                z);
+                DayzGame::GetViewportSize().y * (1 - (y / DayzGame::GetProjectionD2().y / z)));
+        output.x = res.x;
+        output.y = res.y;
+        return true;
     };
     void MovCameraUp(){
         if (DayzGame::CameraSpeed <= 0) { DayzGame::CameraSpeed = 1.0f; }
@@ -378,9 +385,8 @@ private:
     string ReadArmaString(uint64_t address)
     {
         int length = GameProcess->Read<uint64_t>(address + off_length);
-        char16_t wcharTemp[64] = { '\0' };
-        GameProcess->Read(address, wcharTemp, length * 2);
-        std::string u8_conv = std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t>{}.to_bytes(wcharTemp);
-        return u8_conv;
+        char buffer[100];
+        GameProcess->Read(address + off_text, buffer, length);
+        return buffer;
     };
 };

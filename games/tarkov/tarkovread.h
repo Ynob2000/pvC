@@ -9,7 +9,7 @@
 class TarkovReader : public Reader<TarkovGame>
 {
 public:
-    void fillBones(const Matrix4f&, TarkovPlayerBones&, TarkovSkeletonRoot&, int, int, Vector2f*, ESPObject&);
+    static void fillBones(const Matrix4f&, TarkovPlayerBones&, TarkovSkeletonRoot&, float, float, Vector2f*, ESPObject&);
 
     bool InGame() override;
     void GetPlayers(ESPObjectArray *, float, float, bool) override;

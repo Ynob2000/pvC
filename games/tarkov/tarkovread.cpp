@@ -6,6 +6,11 @@
 float MAX_RENDER_DISTANCE = 500.f;
 
 
+void toWinPos(Vector2f& screenPos, float width, float height)
+{
+    screenPos.x = (screenPos.x + width) / 2;
+    screenPos.y = (-screenPos.y + height) / 2;
+}
 
 
 bool TarkovReader::InGame()
@@ -14,45 +19,69 @@ bool TarkovReader::InGame()
 }
 
 void TarkovReader::fillBones(const Matrix4f& CameraMatrix, TarkovPlayerBones& playerBones, TarkovSkeletonRoot& skeletonRoot,
-               int width, int height, Vector2f* LocalScreenPos, ESPObject& Object)
+               float width, float height, Vector2f* LocalScreenPos, ESPObject& Object)
 {
     Object.drawBones = true;
+
     Vector2f pRPVect;
     WorldToScreen(CameraMatrix, playerBones.GetRightPalmPosition(), pRPVect, width, height);
     pRPVect += *LocalScreenPos;
+    toWinPos(pRPVect, width, height);
+
     Vector2f PLPVect;
     WorldToScreen(CameraMatrix, playerBones.GetLeftPalmPosition(), PLPVect, width, height);
     PLPVect += *LocalScreenPos;
+    toWinPos(PLPVect, width, height);
+
     Vector2f PLShVect;
     WorldToScreen(CameraMatrix, playerBones.GetLeftShoulderPosition(), PLShVect, width, height);
     PLShVect += *LocalScreenPos;
+    toWinPos(PLShVect, width, height);
+
     Vector2f PLRShVect;
     WorldToScreen(CameraMatrix, playerBones.GetRightShoulderPosition(), PLRShVect, width, height);
     PLRShVect += *LocalScreenPos;
+    toWinPos(PLRShVect, width, height);
+
     Vector2f PLNeckVect;
     WorldToScreen(CameraMatrix, playerBones.GetNeckPosition(), PLNeckVect, width, height);
     PLNeckVect += *LocalScreenPos;
+    toWinPos(PLNeckVect, width, height);
+
     Vector2f PLCentrVect;
     WorldToScreen(CameraMatrix, playerBones.GetPelvisPosition(), PLCentrVect, width, height);
     PLCentrVect += *LocalScreenPos;
+    toWinPos(PLCentrVect, width, height);
+
     Vector2f PLRFootVect;
     WorldToScreen(CameraMatrix, playerBones.GetKickingFootPosition(), PLRFootVect, width, height);
     PLRFootVect += *LocalScreenPos;
+    toWinPos(PLRFootVect, width, height);
+
     Vector2f PLLFootVect;
     WorldToScreen(CameraMatrix, skeletonRoot.GetLocationMatrixTest(18), PLLFootVect, width, height);
     PLLFootVect += *LocalScreenPos;
+    toWinPos(PLLFootVect, width, height);
+
     Vector2f PLLBowVect;
     WorldToScreen(CameraMatrix, skeletonRoot.GetLocationMatrixTest(91), PLLBowVect, width, height);
     PLLBowVect += *LocalScreenPos;
+    toWinPos(PLLBowVect, width, height);
+
     Vector2f PLRBowVect;
     WorldToScreen(CameraMatrix, skeletonRoot.GetLocationMatrixTest(112), PLRBowVect, width, height);
     PLRBowVect += *LocalScreenPos;
+    toWinPos(PLRBowVect, width, height);
+
     Vector2f PLLKneeVect;
     WorldToScreen(CameraMatrix, skeletonRoot.GetLocationMatrixTest(17), PLLKneeVect, width, height);
     PLLKneeVect += *LocalScreenPos;
+    toWinPos(PLLKneeVect, width, height);
+
     Vector2f PLRKneeVect;
     WorldToScreen(CameraMatrix, skeletonRoot.GetLocationMatrixTest(22), PLRKneeVect, width, height);
     PLRKneeVect += *LocalScreenPos;
+    toWinPos(PLRKneeVect, width, height);
 
     Object.bones[0] = std::make_pair(PLNeckVect, PLCentrVect);
     Object.bones[1] = std::make_pair(PLShVect, PLLBowVect);
@@ -164,8 +193,10 @@ void TarkovReader::GetPlayers(ESPObjectArray *a, float width, float height, bool
                 Object.b = 0 / 255.f;
             }
         }
+        toWinPos(*ScreenPos, width, height);
         Object.x = ScreenPos->x;
         Object.y = ScreenPos->y;
+        toWinPos(*HeadScreenPos, width, height);
         Object.xHead = HeadScreenPos->x;
         Object.yHead = HeadScreenPos->y;
         Object.inGameDistance = distance;
@@ -190,7 +221,6 @@ void TarkovReader::GetPlayers(ESPObjectArray *a, float width, float height, bool
     GameProcess->Write<Vector2f>( movement.Address + 0x1d8,
                                   Vector2f(chosenPlayerAngle.x, chosenPlayerAngle.y) );
 }
-
 
 
 void TarkovReader::GetLoot(ESPObjectArray *a, float width, float height)

@@ -49,7 +49,7 @@ using namespace std;
 
 #define off_entity_cameraentry 0x2168
 #define off_entity_futurevisualstate 0x88 
-#define off_entity_renderervisualstate 0x128
+#define off_entity_renderervisualstate 0x130
 #define off_entity_futureentitytype 0x38
 #define off_entity_rendererentitytype 0xe0
 #define off_entity_sortobject 0x138
