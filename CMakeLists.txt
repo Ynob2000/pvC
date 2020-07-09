@@ -11,16 +11,21 @@ SET(CMAKE_C_LINK_EXECUTABLE ${CMAKE_CXX_LINK_EXECUTABLE})
 include_directories(
         vmread
         vmread/hlapi
-        tarkov
+        games
         vmath/src
 )
+
+if (TARKOV)
+    add_definitions(-DTARKOV)
+elseif (DAYZ)
+    add_definitions(-DDAYZ)
+endif()
 
 add_compile_options(
         "-DLMODE=MODE_EXTERNAL")
 
 set(SOURCES
         main.cpp
-        tarkovread.cpp
         vmread/mem.c
         vmread/wintools.c
         vmread/pmparser.c
@@ -28,16 +33,14 @@ set(SOURCES
         vmread/hlapi/windll.cpp
         vmread/hlapi/winprocess.cpp
         vmread/hlapi/winprocesslist.cpp
-        vmath/src/vmath.cpp
-        tarkov/Includes.cpp
-        render.cpp render.h tarkov/GameSpecific/Tarkov/aimbot.h)
+        vmath/src/vmath.cpp)
 
 
 add_executable(privateCheese ${SOURCES}
         )
-find_package(X11 REQUIRED)
-find_package(OpenGL REQUIRED)
 add_subdirectory("common"          "${CMAKE_BINARY_DIR}/common"   )
+add_subdirectory("games"          "${CMAKE_BINARY_DIR}/games"   )
+
 link_directories(${X11_LIBRARIES})
 target_link_libraries(privateCheese
         ${X11_LIBRARIES})
@@ -46,4 +49,5 @@ target_link_libraries(privateCheese
         GL)
 target_link_libraries(privateCheese
         lg_common
+        games
         )
