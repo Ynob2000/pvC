@@ -198,27 +198,21 @@ void Menu::RenderMenu(const std::vector<data>& ds)
 			char buff[100];
 			sprintf(buff, "%s (%.2fm)", p.pName, p.inGameDistance);
 			std::string label = buff;
-			float realX = (p.x + 1920) / 2;
-			float realY = (-p.y + 1080) / 2;
-
-			float realX2 = (p.x2 + 1920) / 2;
-			float realY2 = (-p.y2 + 1080) / 2;
-			if (realX == realY && realX == 0)
+			if (p.x == p.y && p.x == 0)
 				continue;
 			float radius = 20;
 			ImU32 color = ImGui::GetColorU32({ p.r, p.g, p.b, 255 / 255.0f });
-			ImGui::GetOverlayDrawList()->AddText(ImGui::GetFont(), 13 + 30 * getFactorFromDistance(p.inGameDistance), ImVec2(realX2 + 1, realY2 + 1), color, label.c_str());
-			ImGui::GetOverlayDrawList()->AddCircle(ImVec2(realX2, realY2), radius * getFactorFromDistance(p.inGameDistance), color);
+			ImGui::GetOverlayDrawList()->AddText(ImGui::GetFont(), 13 + 30 * getFactorFromDistance(p.inGameDistance), ImVec2(p.x2 + 1, p.y2 + 1), color, label.c_str());
+			ImGui::GetOverlayDrawList()->AddCircle(ImVec2(p.x2, p.y2), radius * getFactorFromDistance(p.inGameDistance), color);
 
 			if (p.drawB)
 			{
 				for (int i = 0; i < 10; ++i)
 				{
-					float b1X = (p.bones[i].first.x + 1920) / 2;
-					float b1Y = (-p.bones[i].first.y + 1080) / 2;
-					float b2X = (p.bones[i].second.x + 1920) / 2;
-					float b2Y = (-p.bones[i].second.y + 1080) / 2;
-					ImGui::GetOverlayDrawList()->AddLine(ImVec2(b1X, b1Y), ImVec2(b2X, b2Y), color);
+					ImGui::GetOverlayDrawList()->AddLine(
+						ImVec2(p.bones[i].first.x, p.bones[i].first.y), 
+						ImVec2(p.bones[i].second.x, p.bones[i].second.y), 
+						color);
 				}
 			}
 		}
