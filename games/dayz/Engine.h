@@ -12,17 +12,17 @@ using namespace std;
 
 //this offset for last build 03/01/2019 (march)
 
-#define off_world 0x402A8C8
-#define off_networkmanager 0xDD6EF0
+#define off_world 0x402B8B8
+#define off_networkmanager 0xDD7EE0
 
 #define off_networkmanager_networkclient 0x50
 
 #define off_networkclient_scoreboard 0x10
-#define off_networkclient_playeridentity_size 0x168
+#define off_networkclient_playeridentity_size 0x158
 #define off_networkclient_servername 0x330
 
 #define off_playeridentity_networkid 0x30
-#define off_playeridentity_playername 0x100
+#define off_playeridentity_playername 0xF0
 
 #define off_world_camera 0x1b8
 
@@ -35,36 +35,36 @@ using namespace std;
 #define off_camera_projection_d2 0xDC
 
 #define off_world_nearanimaltable 0xE90
-#define off_world_faranimaltable 0xf90
-#define off_world_slowanimaltable 0x10a8
-#define off_world_itemtable 0x1f48
-#define off_world_bullettable 0xD00 
+#define off_world_faranimaltable 0xFD8
+#define off_world_slowanimaltable 0x1F40
+#define off_world_itemtable 0x1F90
+#define off_world_bullettable 0xD48
 
-#define off_world_cameraon 0x2890
-#define off_world_playeron 0x2898
+#define off_world_cameraon 0x2898
+#define off_world_playeron 0x2890
 
-#define off_world_terraingrid 0xb40
+#define off_world_terraingrid 0xb70
 
 #define off_sortedobject_entity 0x8
 
 #define off_entity_cameraentry 0x2168
 #define off_entity_futurevisualstate 0x88 
-#define off_entity_renderervisualstate 0x130
+#define off_entity_renderervisualstate 0x128
 #define off_entity_futureentitytype 0x38
 #define off_entity_rendererentitytype 0xe0
 #define off_entity_sortobject 0x138
 #define off_entity_baseentity 0xa8
-#define off_entity_networkid 0x564
-#define off_entity_inventory 0x438
+#define off_entity_networkid 0x57C
+#define off_entity_inventory 0x4F8
 
 #define off_cameraentry_movupdown 0xa4
 #define off_cameraentry_movforwardbackward 0xc4
 #define off_cameraentry_movleftright 0xc8
 #define off_cameraentry_movrotate 0xd8
 
-#define off_inventory_iteminhands 0x200
+#define off_inventory_iteminhands 0x1B0
 
-#define off_entitytype_basetype 0x88
+#define off_entitytype_basetype 0xE0
 #define off_entitytype_typename 0x68
 #define off_entitytype_modelname 0x78
 #define off_entitytype_configname 0x98

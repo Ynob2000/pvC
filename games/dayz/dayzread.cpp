@@ -12,8 +12,8 @@ void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool u
 {
     for (uint64_t Entity : game->GetAllEntityes()) // all players
     {
-        Vector3 worldPosition = game->GetCoordinate(Entity);
-        Vector3 screenPos = game->WorldToScreen(worldPosition);
+        Vector3f worldPosition = game->GetCoordinate(Entity);
+        Vector3f screenPos = game->WorldToScreen(worldPosition);
 
         float distanceToMe = game->GetDistanceToMe(worldPosition);
         string playerName = game->GetPlayerName(Entity);
