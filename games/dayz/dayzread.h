@@ -3,8 +3,7 @@
 #include <vmath.h>
 #include "common/ivshmem_com.h"
 #include "reader.h"
-
-typedef struct DayzGame DayzGame;
+#include "dayzgame.h"
 
 
 class DayzReader : public Reader<DayzGame>

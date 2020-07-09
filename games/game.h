@@ -3,12 +3,11 @@
 
 class Game
 {
-private:
-    WinContext *ProcessContext;
-    WinProcess *GameProcess;
-    uint64_t ModuleBase;
-
 public:
+    WinContext *ProcessContext;
+    uint64_t ModuleBase;
+    WinProcess *GameProcess;
+
     ~Game()
     {
         delete ProcessContext;

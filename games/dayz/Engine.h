@@ -4,43 +4,6 @@
 
 #pragma once
 
-#include <windows.h>
-#include <winternl.h>
-#include <tlhelp32.h>
-#include <shlwapi.h>
-#include <dwmapi.h> 
-
-#include <signal.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <atlstr.h> 
-#include <vector>
-#include <assert.h>
-#include <sstream>
-#include <iostream>
-#include <fstream>
-#include <tchar.h>
-
-#include <d3d11.h>
-
-#include <string>
-#include <thread>
-#include <chrono>
-#include <mutex>
-
-#include <winioctl.h>
-#include <sys/types.h>
-#include <algorithm>
-
-#include <iomanip>  
-#include <dxgiformat.h>
-#include <stdarg.h> 
-#include <memory>  
-#include <psapi.h>
-
-#include <vector>
-#include "Vector3.h"
-
 #pragma warning (disable: 4996)
 
 using namespace std;
@@ -49,8 +12,8 @@ using namespace std;
 
 //this offset for last build 03/01/2019 (march)
 
-#define off_world 0xe339c8
-#define off_networkmanager 0xddff80
+#define off_world 0x402A8C8
+#define off_networkmanager 0xDD6EF0
 
 #define off_networkmanager_networkclient 0x50
 
@@ -71,14 +34,14 @@ using namespace std;
 #define off_camera_projection_d1 0xD0
 #define off_camera_projection_d2 0xDC
 
-#define off_world_nearanimaltable 0xe48
+#define off_world_nearanimaltable 0xE90
 #define off_world_faranimaltable 0xf90
 #define off_world_slowanimaltable 0x10a8
 #define off_world_itemtable 0x1f48
 #define off_world_bullettable 0xD00 
 
-#define off_world_cameraon 0x2840
-#define off_world_playeron 0x2848
+#define off_world_cameraon 0x2890
+#define off_world_playeron 0x2898
 
 #define off_world_terraingrid 0xb40
 

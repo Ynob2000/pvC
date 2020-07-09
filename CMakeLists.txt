@@ -15,9 +15,8 @@ include_directories(
         vmath/src
 )
 
-if(TARKOV)
-    add_definitions(-DTARKOV)
-endif()
+add_definitions(-DTARKOV)
+add_definitions(-DDAYZ)
 
 add_compile_options(
         "-DLMODE=MODE_EXTERNAL")
