@@ -11,7 +11,7 @@ bool DayzReader::InGame()
 void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool use_aimbot)
 {
     clearArray(a);
-    for (uint64_t Entity : game->GetAllEntityes()) // all players
+    for (uint64_t Entity : game->GetAllEntities()) // all players
     {
         Vector3f worldPosition = game->GetCoordinate(Entity);
         Vector2f screenPos;
@@ -20,7 +20,7 @@ void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool u
             continue;
 
         float distanceToMe = game->GetDistanceToMe(worldPosition);
-        string playerName = "player"; //game->GetPlayerName(Entity);
+        string playerName = game->GetPlayerName(Entity);
 
 //        printf("PlayerName: %s                \n", playerName.c_str());
 //        printf("Type: %s                      \n", game->GetTypeName(Entity).c_str());
@@ -45,7 +45,34 @@ void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool u
     }
 }
 
+
 void DayzReader::GetLoot(ESPObjectArray *a, float width, float height)
 {
+    for (uint64_t Item : game->GetAllItems()) // all items
+    {
+        Vector3f worldPosition = game->GetCoordinate(Item);
+        Vector2f screenPos;
+        bool render = game->WorldToScreen(worldPosition, screenPos);
+        if (!render)
+            continue;
 
+        float distanceToMe = game->GetDistanceToMe(worldPosition);
+        if (distanceToMe > 150)
+            continue;
+        string itemName = game->GetItemName(Item);
+
+        ESPObject Object;
+        strcpy(Object.pName, itemName.c_str());
+        Object.r = 125 / 255.f;
+        Object.g = 125 / 255.f;
+        Object.b = 255 / 255.f;
+        Object.x = screenPos.x;
+        Object.y = screenPos.y;
+        Object.xHead = screenPos.x;
+        Object.yHead = screenPos.y;
+        Object.inGameDistance = distanceToMe;
+        Object.drawBones = false;
+
+        insertArray(a, Object);
+    }
 }

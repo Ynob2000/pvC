@@ -8,7 +8,7 @@ Example (very easy to use!)
         EnfusionProcess::AutoGameSelection(Analysis::Deep);
  
         //get all players around u
-	for (uint64_t Entity : EnfusionEngine::GetAllEntityes()) // all players
+	for (uint64_t Entity : EnfusionEngine::GetAllEntities()) // all players
 	{
 		Vector3 worldPosition = EnfusionEngine::GetCoordinate(Entity);
 		Vector3 screenPosition = EnfusionEngine::WorldToScreen(worldPosition);

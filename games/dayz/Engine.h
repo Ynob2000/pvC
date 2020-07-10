@@ -54,7 +54,7 @@ using namespace std;
 #define off_entity_rendererentitytype 0xe0
 #define off_entity_sortobject 0x138
 #define off_entity_baseentity 0xa8
-#define off_entity_networkid 0x57C
+#define off_entity_networkid 0x58C
 #define off_entity_inventory 0x4F8
 
 #define off_cameraentry_movupdown 0xa4

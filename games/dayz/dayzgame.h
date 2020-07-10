@@ -19,8 +19,7 @@ public:
                 ModuleBase + off_world);
     };
     uint64_t GetNetworkManager() {
-        return GameProcess->Read<uint64_t>(
-                ModuleBase + off_networkmanager);
+        return ModuleBase + off_networkmanager;
     };
     uint64_t GetNetworkClient(){
         return GameProcess->Read<uint64_t>(
@@ -34,32 +33,31 @@ public:
         return DayzGame::ReadArmaString(GameProcess->Read<uint64_t>(
                 DayzGame::GetNetworkClient() + off_networkclient_servername));
     };
-    uint64_t GetCountOfPlayers(){
-        return GameProcess->Read<uint64_t>(
-                DayzGame::GetNetworkClientScoreBoard() + off_sortedobject_entity);
+    uint32_t GetCountOfPlayers(){
+        return GameProcess->Read<uint32_t>(
+                DayzGame::GetNetworkClient() + off_networkclient_scoreboard + off_sortedobject_entity);
     };
     string GetPlayerName(uint64_t Entity){
-        return GetPlayerIdentityPlayerName(
-                DayzGame::GetNetworkId(Entity));
+        uint64_t playerIdentity = GetIdentity(GetNetworkId(Entity));
+        return GetPlayerIdentityPlayerName(playerIdentity);
     };
     string GetItemName(uint64_t Entity){
-        return GetItemName(
-                DayzGame::GetNetworkId(Entity));
-    }; // my own
-    uint64_t GetPlayerIdentityNetworkId(uint64_t Identity){
+        return DayzGame::ReadArmaString(ReadPtrChain(GameProcess, Entity, {0xE0, 0x450}));
+    };
+    int GetPlayerIdentityNetworkId(uint64_t Identity){
         return GameProcess->Read<uint64_t>(Identity + off_playeridentity_networkid);
     };
     string GetPlayerIdentityPlayerName(uint64_t Identity){
         return DayzGame::ReadArmaString(GameProcess->Read<uint64_t>(Identity + off_playeridentity_playername));
     };
-    uint64_t GetIdentity(uint64_t networkId){
-        for (uint64_t i = 0; i < DayzGame::GetCountOfPlayers(); i++) {
-            uint64_t tempIdentity = DayzGame::GetPlayerIdentityNetworkId(
-                    GameProcess->Read<uint64_t>(
-                            DayzGame::GetNetworkClientScoreBoard() + i * off_networkclient_playeridentity_size));
+    uint64_t GetIdentity(int networkId){
+        uint32_t nbPlayers = DayzGame::GetCountOfPlayers();
+        for (int i = 0; i < nbPlayers; ++i) {
+            uint64_t PlayerIdentity = DayzGame::GetNetworkClientScoreBoard() + i * off_networkclient_playeridentity_size;
+            int tempIdentity = DayzGame::GetPlayerIdentityNetworkId(PlayerIdentity);
 
             if (tempIdentity == networkId)
-                return  tempIdentity;
+                return DayzGame::GetNetworkClientScoreBoard() + i * off_networkclient_playeridentity_size;
         }
     };
     uint64_t GetCamera(){
@@ -94,8 +92,8 @@ public:
     uint64_t GetEntity(uint64_t PlayerList, uint64_t SelectedPlayer){
         return GameProcess->Read<uint64_t>(PlayerList + SelectedPlayer * off_sortedobject_entity);
     };
-    uint64_t GetNetworkId(uint64_t Entity){
-        return GameProcess->Read<uint64_t>(Entity + off_entity_networkid);
+    int GetNetworkId(uint64_t Entity){
+        return GameProcess->Read<int>(Entity + off_entity_networkid);
     };
     string GetEntityTypeName(uint64_t Entity){
         string name = DayzGame::ReadArmaString(GameProcess->Read<uint64_t>(
@@ -130,18 +128,30 @@ public:
                             Entity + off_entity_renderervisualstate) + off_visualstate_position);
         }
     };
-    float GetDistanceToMe(Vector3f Entity){
+    Vector3f GetHeadCoordinate(uint64_t Entity){
+        if (Entity == DayzGame::GetLocalPlayer()) {
+            return GameProcess->Read<Vector3f>(
+                    DayzGame::GetLocalPlayerVisualState() + off_visualstate_position);
+        }
+        else {
+            return  GameProcess->Read<Vector3f>(
+                    GameProcess->Read<uint64_t>(
+                            Entity + off_entity_renderervisualstate) + off_visualstate_headposition);
+        }
+    };
+    float GetDistanceToMe(const Vector3f& Entity){
         return GetDistanceFromTo(Entity, DayzGame::GetCoordinate(DayzGame::GetLocalPlayer()));
     };
-    float GetDistanceFromTo(Vector3f From, Vector3f To){
+    static float GetDistanceFromTo(const Vector3f& From, const Vector3f& To){
         return (To - From).length();
     };
-    uint64_t GetItemTable(){
+    uint64_t GetItemTable(int index = 0){
         return GameProcess->Read<uint64_t>(
-                DayzGame::GetWorld() + off_world_itemtable);
+                DayzGame::GetWorld() + off_world_itemtable + (index * 0x20));
     };
-    uint64_t GetItemTableSize(){
-        return sizeof(DayzGame::GetItemTable()) * 3;
+    uint64_t GetItemTableSize(int index = 0){
+        return GameProcess->Read<uint64_t>(
+                DayzGame::GetWorld() + off_world_itemtable + (index * 0x20) + off_length);
     };
     uint64_t NearEntityTable(){
         return GameProcess->Read<uint64_t>(
@@ -169,22 +179,26 @@ public:
     };
     vector<uint64_t> GetAllItems(){
         vector<uint64_t> arrayList;
+        for (int i = 0; i < 12; ++i) {
+            uint32_t tableSize = DayzGame::GetItemTableSize(i);
 
-        for (uint64_t ItemId = NULL; ItemId < DayzGame::GetItemTableSize(); ++ItemId) {
-            arrayList.push_back(DayzGame::GetEntity(DayzGame::GetItemTable(), ItemId));
+            for (uint64_t ItemId = 0; ItemId < 3 * tableSize; ++ItemId) {
+                uint64_t entity = DayzGame::GetEntity(DayzGame::GetItemTable(i), ItemId);
+                if (entity!=0)
+                    arrayList.push_back(entity);
+            }
         }
-
         return arrayList;
     };
-    vector<uint64_t> GetNearEntityes(){
+    vector<uint64_t> GetNearEntities(){
         vector<uint64_t> arrayList;
 
-        for (uint64_t playerId = NULL; playerId < DayzGame::NearEntityTableSize(); ++playerId) {
+        for (uint64_t playerId = 0; playerId < DayzGame::NearEntityTableSize(); ++playerId) {
             arrayList.push_back(DayzGame::GetEntity(DayzGame::NearEntityTable(), playerId));
         }
         return arrayList;
     };
-    vector<uint64_t> GetFarEntityes(){
+    vector<uint64_t> GetFarEntities(){
         vector<uint64_t> arrayList;
 
         for (uint64_t playerId = NULL; playerId < DayzGame::FarEntityTableSize(); ++playerId) {
@@ -192,7 +206,7 @@ public:
         }
         return arrayList;
     };
-    vector<uint64_t> GetAllEntityes(){
+    vector<uint64_t> GetAllEntities(){
         vector<uint64_t> arrayList;
         int nearEntitySize = DayzGame::NearEntityTableSize();
 
