@@ -464,6 +464,7 @@ public:
             "Attachable Pouches",
             "Holster",
             "Gun Holster"
+	    "Hunting Scope"	
     };
 
     std::set<std::string> items = {
@@ -481,10 +482,10 @@ public:
             "Sawed-off BK-18",
             "CR-527",
             "SK 59/66",
-            "Mosin 91/30", "Mosin 91/30 Geen", "Mosin 91/30 Black", "Mosin 91/30 Camo", "7.62x54mmR Rounds", "Box of 7.62x54mmR Rounds", "7.62x54mmR Tracer Rounds", "Boxed 7.62x54mmR Tracer Rounds",
+            "Mosin 91/30", "Mosin 91/30 Geen", "Mosin 91/30 Black", "Mosin 91/30 Camo", "7.62x54mmR Rounds", "Boxed 7.62x54mmR Rounds", "7.62x54mmR Tracer Rounds", "Boxed 7.62x54mmR Tracer Rounds",
             "Sawed-off Mosin 91/30",
-            "M70 Tundra", "M70 Tundra Black", "M70 Tundra Green", ".308 WIN Rounds", "308 WIN Tracer Rounds", "Box of .308 WIN Rounds", "Boxed .308 WIN Tracer Rounds",
-            "M4-A1", "5.56×45mm", "Box of 5.56mm Rounds", "5.56x45mm Tracer Rounds", "Boxed 5.56x45mm Tracer Rounds",
+            "M70 Tundra", "M70 Tundra Black", "M70 Tundra Green", ".308 WIN Rounds", "308 WIN Tracer Rounds", "Boxed .308 WIN Rounds", "Boxed .308 WIN Tracer Rounds",
+            "M4-A1", "5.56×45mm Rounds", "Boxed of 5.56mm Rounds", "5.56x45mm Tracer Rounds", "Boxed 5.56x45mm Tracer Rounds",
             "KA-M", "30rd KA-M Mag", "75rd KA-M Drum Mag", "30rd KA-M Polymer Mag",
             "KA-101", "30rd KA-101 Mag", "30Rnd AK101 Magazine (Green)",
             "KA-74", "30rd KA-74 Mag", "Box of 5.45×39mm Rounds", "5.45×39mm Rounds", "5.45x39mm Tracer Rounds", "Boxed 5.45x39mm Tracer Rounds",
@@ -492,6 +493,9 @@ public:
             "LAR", "20rd LAR Mag",
             "VSD", "10rd VSD Mag",
             "VSS", "10rd VSS Mag"
+	    "Blaze"
+	    "Land Mine"
+	    "Shovel"
     };
 
 
