@@ -180,14 +180,17 @@ public:
     };
     vector<uint64_t> GetAllItems(){
         vector<uint64_t> arrayList;
-        for (int i = 0; i < 12; ++i) {
-            uint32_t tableSize = DayzGame::GetItemTableSize(i);
 
-            for (uint64_t ItemId = 0; ItemId < 3 * tableSize; ++ItemId) {
-                uint64_t entity = DayzGame::GetEntity(DayzGame::GetItemTable(i), ItemId);
-                if (entity!=0)
-                    arrayList.push_back(entity);
-            }
+        uint64_t pItemTable = GetItemTable();
+        uint32_t lAllocCount = GetItemTableSize();
+
+        for (int i = 0; i < lAllocCount; i++)
+        {
+            uint64_t pCurrentIndex = pItemTable + (0x18 * i);
+            if (GameProcess->Read<uint32_t>(pCurrentIndex) != 1)
+                continue;
+            uint64_t pItem = GameProcess->Read<uint64_t>(pCurrentIndex + 0x8);
+            arrayList.push_back(pItem);
         }
         return arrayList;
     };
