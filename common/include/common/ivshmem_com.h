@@ -2,6 +2,12 @@
 #include <stdbool.h>
 #include <vmath.h>
 
+extern "C" {
+#include "common/ivshmem.h"
+#include "common/debug.h"
+}
+
+
 typedef struct
 {
     char pName[100];
@@ -25,3 +31,5 @@ bool initArray(ESPObjectArray *a, int initialSize);
 void insertArray(ESPObjectArray *a, ESPObject element);
 void clearArray(ESPObjectArray *a);
 void freeArray(ESPObjectArray *a);
+
+void send_data(IVSHMEM* shm, ESPObjectArray* data);

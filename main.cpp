@@ -12,27 +12,11 @@
     #define READER DayzReader
 #endif
 
-extern "C" {
-#include "common/ivshmem.h"
-#include "common/debug.h"
-}
 #include <chrono>
 #include <thread>
 
 using namespace std::chrono_literals;
 
-
-void send_data(IVSHMEM* shm, ESPObjectArray* data)
-{
-    void* memory = shm->mem;
-    size_t size = data->size;
-    ESPObject * array = data->array;
-    for (size_t t = 0; t < size; ++t) {
-        memcpy((void*)((uintptr_t)memory + t * sizeof(ESPObject)),
-                array + t,
-                sizeof(ESPObject));
-    }
-}
 
 bool use_aimbot(IVSHMEM* shm)
 {

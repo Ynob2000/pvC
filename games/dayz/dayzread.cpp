@@ -23,6 +23,7 @@ void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool u
         string playerName = game->GetPlayerName(Entity);
 
 //        printf("PlayerName: %s                \n", playerName.c_str());
+//        printf("Ptr: %lu                \n", ptr);
 //        printf("Type: %s                      \n", game->GetTypeName(Entity).c_str());
 //        printf("Model: %s                     \n", game->GetModelName(Entity).c_str());
 //        printf("Item in Hands: %s             \n", game->GetItemInHands(Entity).c_str());
@@ -60,12 +61,29 @@ void DayzReader::GetLoot(ESPObjectArray *a, float width, float height)
         if (distanceToMe > 150)
             continue;
         string itemName = game->GetItemName(Item);
-
         ESPObject Object;
+        if (game->food.find(itemName) != game->food.end())
+        {
+            Object.r = 255 / 255.f;
+            Object.g = 87 / 255.f;
+            Object.b = 51 / 255.f;
+        }
+        else if (game->gear.find(itemName) != game->gear.end())
+        {
+            Object.r = 0 / 255.f;
+            Object.g = 255 / 255.f;
+            Object.b = 255 / 255.f;
+        }
+        else if (game->items.find(itemName) != game->items.end())
+        {
+            Object.r = 0 / 255.f;
+            Object.g = 27 / 255.f;
+            Object.b = 255 / 255.f;
+        }
+        else
+            continue;
+
         strcpy(Object.pName, itemName.c_str());
-        Object.r = 125 / 255.f;
-        Object.g = 125 / 255.f;
-        Object.b = 255 / 255.f;
         Object.x = screenPos.x;
         Object.y = screenPos.y;
         Object.xHead = screenPos.x;

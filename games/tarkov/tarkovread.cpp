@@ -157,7 +157,7 @@ void TarkovReader::GetPlayers(ESPObjectArray *a, float width, float height, bool
         TarkovSkeletonRoot skeletonRoot = Player.GetPlayerBody().GetSkeletonRoot();
         Vector3f headPosition = playerBones.GetHeadPosition();
         std::string groupId = Player.GetPlayerProfile().GetPlayerInfo().GetGroupID().GetString();
-        bool is_friend = (groupId == myGroupId && !Player.IsScav());
+        bool is_friend = (groupId != "" && groupId == myGroupId && !Player.IsScav());
         if (distance < 150.f && use_aimbot && !is_friend)
         {
             Vector3f aimAngle = CalculateAngle( myFireportPosition, headPosition );
@@ -183,14 +183,31 @@ void TarkovReader::GetPlayers(ESPObjectArray *a, float width, float height, bool
         {
             if (is_friend)
             {
-                Object.r = 0 / 255.f;
+                Object.r = 0 ;
                 Object.g = 255 / 255.f;
                 Object.b = 0 / 255.f;
             } else
             {
-                Object.r = 255 / 255.f;
-                Object.g = 0 / 255.f;
-                Object.b = 0 / 255.f;
+                if (groupId == "")
+                {
+                    // Solo players
+                    Object.r = 255/255.f ;
+                    Object.g = 0 / 255.f;
+                    Object.b = 0 / 255.f;
+                }
+                else {
+                    auto t = teamColors.find(groupId);
+                    color c{};
+                    if (t == teamColors.end()) {
+                        c = GetNewColor();
+                        teamColors.insert(std::make_pair(groupId, c));
+                    } else {
+                        c = t->second;
+                    }
+                    Object.r = c.r / 255.f;
+                    Object.g = c.g / 255.f;
+                    Object.b = c.b / 255.f;
+                }
             }
         }
         toWinPos(*ScreenPos, width, height);
@@ -225,6 +242,7 @@ void TarkovReader::GetPlayers(ESPObjectArray *a, float width, float height, bool
 
 void TarkovReader::GetLoot(ESPObjectArray *a, float width, float height)
 {
+    return;
     Matrix4f CameraMatrix = game->GetCameraMatrix();
     Vector3f CameraPosition = game->GetCameraLocation();
     std::vector<TarkovLootItem*> Items = game->GetLootList();
