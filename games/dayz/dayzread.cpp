@@ -62,7 +62,7 @@ void DayzReader::GetLoot(ESPObjectArray *a, float width, float height)
             continue;
         string itemName = game->GetItemName(Item);
         ESPObject Object;
-        if (game->food.find(itemName) != game->food.end())
+        if (game->food.find(itemName) != game->food.end() && false)
         {
             Object.r = 255 / 255.f;
             Object.g = 87 / 255.f;
