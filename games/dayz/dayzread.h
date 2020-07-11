@@ -11,6 +11,7 @@ class DayzReader : public Reader<DayzGame>
 public:
 
     bool InGame() override;
+    void fillBones(ESPObject&, uint64_t);
     void GetPlayers(ESPObjectArray *, float, float, bool) override;
     void GetLoot(ESPObjectArray *, float, float) override;
 };

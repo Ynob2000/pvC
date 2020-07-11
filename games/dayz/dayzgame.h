@@ -129,6 +129,17 @@ public:
                             Entity + off_entity_renderervisualstate) + off_visualstate_position);
         }
     };
+    Vector3f GetOrientation(uint64_t Entity){
+        if (Entity == DayzGame::GetLocalPlayer()) {
+            return GameProcess->Read<Vector3f>(
+                    DayzGame::GetLocalPlayerVisualState() + off_visualstate_orientation);
+        }
+        else {
+            return  GameProcess->Read<Vector3f>(
+                    GameProcess->Read<uint64_t>(
+                            Entity + off_entity_renderervisualstate) + off_visualstate_orientation);
+        }
+    };
     Vector3f GetHeadCoordinate(uint64_t Entity){
         if (Entity == DayzGame::GetLocalPlayer()) {
             return GameProcess->Read<Vector3f>(
@@ -140,6 +151,23 @@ public:
                             Entity + off_entity_renderervisualstate) + off_visualstate_headposition);
         }
     };
+    uint64_t GetSkeleton(uint64_t Entity)
+    {
+        return GameProcess->Read<uint64_t>(Entity + 0x6B8);
+    }
+
+    struct Matrix3x4 { float m[12]; };
+
+    Vector3f GetBonePosition(uint64_t Entity, uint32_t SelectionIndex)
+    {
+        uint64_t pSkeleton = GetSkeleton(Entity);
+        auto pAnimation = GameProcess->Read<uint64_t>(pSkeleton + 0xA0);
+        auto pAnimationMatricies = GameProcess->Read<uint64_t>(pAnimation + 0xBF0);
+        uint64_t BoneMatrixAddress = pAnimationMatricies + sizeof(Matrix3x4) * SelectionIndex;
+        auto BoneMatrix = GameProcess->Read<Matrix3x4>(BoneMatrixAddress);
+        return Vector3f(BoneMatrix.m[9], BoneMatrix.m[10], BoneMatrix.m[11]);
+    }
+
     float GetDistanceToMe(const Vector3f& Entity){
         return GetDistanceFromTo(Entity, DayzGame::GetCoordinate(DayzGame::GetLocalPlayer()));
     };
