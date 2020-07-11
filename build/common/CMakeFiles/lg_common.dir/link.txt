@@ -1,2 +1,0 @@
-/usr/bin/ar qc liblg_common.a  CMakeFiles/lg_common.dir/src/stringutils.c.o CMakeFiles/lg_common.dir/src/stringlist.c.o CMakeFiles/lg_common.dir/src/option.c.o CMakeFiles/lg_common.dir/src/framebuffer.c.o CMakeFiles/lg_common.dir/src/ivshmem_com.cpp.o
-/usr/bin/ranlib liblg_common.a
