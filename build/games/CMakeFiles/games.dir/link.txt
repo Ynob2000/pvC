@@ -1,0 +1,2 @@
+/usr/bin/ar qc libgames.a  CMakeFiles/games.dir/Includes.cpp.o CMakeFiles/games.dir/tarkov/tarkovread.cpp.o CMakeFiles/games.dir/dayz/dayzread.cpp.o
+/usr/bin/ranlib libgames.a

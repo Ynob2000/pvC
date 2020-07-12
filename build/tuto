@@ -1,0 +1,8 @@
+cmake .. -DDAYZ=1
+[01:18]
+cmake .. -DTARKOV=1
+
+eXorAujourd’hui à 01:19
+make
+[01:19]
+./sudo ./private cheese
