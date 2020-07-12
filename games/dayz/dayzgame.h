@@ -461,10 +461,12 @@ public:
             "ATOG Scope",
             "Plate Carrier",
             "Pouches",
-            "Attachable Pouches",
             "Holster",
-            "Gun Holster"
-	    "Hunting Scope"	
+            "Standardized Suppressor",
+	    "Normalized Suppressor",
+	    "AK Suppressor",
+ 	    "Hunting Scope" 
+	    	
     };
 
     std::set<std::string> items = {
@@ -478,23 +480,22 @@ public:
             "BK-43", "Sawed-Off BK-43 Shotgun", "Boxed 12ga Rifled Slugs", "12ga Rifled Slugs",
             "Vaiga", "5rd Vaiga Mag", "8rd Vaiga Mag", "20rd Drum Vaiga Mag",
             "SG5-K", "30rd SG5-K Mag",
-            "USG-45", "25rd USG-45 Mag", "7.62x39mm Rounds",  "Box of 7.62x39mm Rounds", "7.62x39mm Tracer Rounds", "Boxed 7.62x39mm Tracer Rounds",
-            "Sawed-off BK-18",
-            "CR-527",
+            "USG-45", "25rd USG-45 Mag", "7.62x39mm Rounds",  "Boxed of 7.62x39mm Rounds", "7.62x39mm Tracer Rounds", "Boxed 7.62x39mm Tracer Rounds",
+ 	    "CR-527",
             "SK 59/66",
             "Mosin 91/30", "Mosin 91/30 Geen", "Mosin 91/30 Black", "Mosin 91/30 Camo", "7.62x54mmR Rounds", "Boxed 7.62x54mmR Rounds", "7.62x54mmR Tracer Rounds", "Boxed 7.62x54mmR Tracer Rounds",
             "Sawed-off Mosin 91/30",
-            "M70 Tundra", "M70 Tundra Black", "M70 Tundra Green", ".308 WIN Rounds", "308 WIN Tracer Rounds", "Boxed .308 WIN Rounds", "Boxed .308 WIN Tracer Rounds",
-            "M4-A1", "5.56×45mm Rounds", "Boxed of 5.56mm Rounds", "5.56x45mm Tracer Rounds", "Boxed 5.56x45mm Tracer Rounds",
+            "M70 Tundra", ".308 WIN Rounds", "308 WIN Tracer Rounds", "Boxed .308 WIN Rounds", "Boxed .308 WIN Tracer Rounds",
+            "M4-A1", "5.56×45mm Rounds", "Boxed of 5.56mm Rounds", "5.56x45mm Tracer Rounds", "Boxed 5.56x45mm Tracer Rounds", "30rd Coupled Standardized Mag", "30rd Standardized Mag"
             "KA-M", "30rd KA-M Mag", "75rd KA-M Drum Mag", "30rd KA-M Polymer Mag",
             "KA-101", "30rd KA-101 Mag", "30Rnd AK101 Magazine (Green)",
-            "KA-74", "30rd KA-74 Mag", "Box of 5.45×39mm Rounds", "5.45×39mm Rounds", "5.45x39mm Tracer Rounds", "Boxed 5.45x39mm Tracer Rounds",
+            "KA-74", "30rd KA-74 Mag", "Boxed of 5.45×39mm Rounds", "5.45×39mm Rounds", "5.45x39mm Tracer Rounds", "Boxed 5.45x39mm Tracer Rounds",
             "KAS-74U",
             "LAR", "20rd LAR Mag",
             "VSD", "10rd VSD Mag",
-            "VSS", "10rd VSS Mag"
-	    "Blaze"
-	    "Land Mine"
+            "VSS", "10rd VSS Mag",
+	    "Blaze",
+	    "Land Mine",
 	    "Shovel"
     };
 
