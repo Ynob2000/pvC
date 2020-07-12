@@ -464,8 +464,8 @@ public:
             "Holster",
             "Standardized Suppressor",
 	    "Normalized Suppressor",
-	    "AK Suppressor",
- 	    "Hunting Scope" 
+ 	    "Hunting Scope",
+	    "Pistol Suppressor" 
 	    	
     };
 
@@ -483,6 +483,7 @@ public:
             "USG-45", "25rd USG-45 Mag", "7.62x39mm Rounds",  "Boxed of 7.62x39mm Rounds", "7.62x39mm Tracer Rounds", "Boxed 7.62x39mm Tracer Rounds",
  	    "CR-527",
             "SK 59/66",
+	    "Repeater Carbine", ".357 Rounds","Boxed .357 Rounds",
             "Mosin 91/30", "Mosin 91/30 Geen", "Mosin 91/30 Black", "Mosin 91/30 Camo", "7.62x54mmR Rounds", "Boxed 7.62x54mmR Rounds", "7.62x54mmR Tracer Rounds", "Boxed 7.62x54mmR Tracer Rounds",
             "Sawed-off Mosin 91/30",
             "M70 Tundra", ".308 WIN Rounds", "308 WIN Tracer Rounds", "Boxed .308 WIN Rounds", "Boxed .308 WIN Tracer Rounds",
