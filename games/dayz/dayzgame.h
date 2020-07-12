@@ -290,6 +290,18 @@ public:
         output.y = res.y;
         return true;
     };
+    Vector3f ModelToWorld(uint64_t Entity, const Vector3f& o, bool localPlayer = false)
+    {
+        uint64_t offset = localPlayer ? off_entity_futurevisualstate : off_entity_renderervisualstate;
+        uint64_t visualState = GameProcess->Read<uint64_t>(Entity + offset);
+        auto a = GameProcess->Read<Matrix3x4>(visualState + off_visualstate_matrix);
+        float x = o[0], y = o[1], z = o[2];
+        Vector3f output{};
+        output.x = a.m[0]*x + a.m[1]*y + a.m[2]*z + a.m[9];
+        output.y = a.m[3]*x + a.m[4]*y + a.m[5]*z + a.m[10];
+        output.z = a.m[6]*x + a.m[7]*y + a.m[8]*z + a.m[11];
+        return output;
+    }
     void MovCameraUp(){
         if (DayzGame::CameraSpeed <= 0) { DayzGame::CameraSpeed = 1.0f; }
 

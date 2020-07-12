@@ -135,8 +135,8 @@ Vector3f get_transform_position(WinProcess* GameProcess, uint64_t transform) {
 
         result = *(__m128 * )((uint64_t) pMatriciesBuf + 0x30 * pTransformAccessReadOnly.index);
         int transformIndex = *(int *) ((uint64_t) pIndicesBuf + 0x4 * pTransformAccessReadOnly.index);
-
-        for (int i = 0; transformIndex >= 0 && i < 30; i++)
+        int transformIndexInit = transformIndex;
+        for (int i = 0; transformIndex >= 0 && i < 30 && fabs(transformIndex - transformIndexInit) < 1000000; i++)
         {
             Matrix34 matrix34 = *(Matrix34*)((uint64_t)pMatriciesBuf + 0x30 * transformIndex);
 

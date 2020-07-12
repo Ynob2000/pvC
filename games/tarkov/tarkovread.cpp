@@ -188,7 +188,7 @@ void TarkovReader::GetPlayers(ESPObjectArray *a, float width, float height, bool
                 Object.b = 0 / 255.f;
             } else
             {
-                if (groupId == "")
+                if (groupId.empty())
                 {
                     // Solo players
                     Object.r = 255/255.f ;

@@ -70,7 +70,8 @@ using namespace std;
 #define off_entitytype_configname 0x98
 #define off_entitytype_cleanname 0x540
 
-#define off_visualstate_orientation 0x2c - 1 * sizeof(Vector3f)
+#define off_visualstate_matrix 0x2c - 3 * sizeof(Vector3f)
+#define off_visualstate_orientation 0x2c - sizeof(Vector3f)
 #define off_visualstate_position 0x2c
 #define off_visualstate_headposition 0xf8
 

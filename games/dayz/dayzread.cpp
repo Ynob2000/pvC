@@ -8,7 +8,7 @@ bool DayzReader::InGame()
     return true;
 }
 
-void DayzReader::fillBones(ESPObject& Object, uint64_t Entity)
+void DayzReader::fillBones(ESPObject& Object, uint64_t Entity, bool localPlayer = false)
 {
     Object.drawBones = true;
     Vector3f playerPosition = game->GetCoordinate(Entity);
@@ -19,7 +19,7 @@ void DayzReader::fillBones(ESPObject& Object, uint64_t Entity)
     bonePosition = playerPosition + game->GetBonePosition(Entity, 1);
     game->WorldToScreen(playerPosition, screenPos1);
     bonePosition = playerPosition + game->GetBonePosition(Entity, 6);
-    game->WorldToScreen(playerPosition + playerOrientation * 5.f, screenPos2);
+    game->WorldToScreen(playerPosition + playerOrientation * 3.f, screenPos2);
     Object.bones[0] = std::make_pair(screenPos1, screenPos2);
 //    bonePosition = playerPosition + game->GetBonePosition(Entity, 1);
 //    game->WorldToScreen(bonePosition, screenPos1);
@@ -48,8 +48,7 @@ void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool u
         float distanceToMe = game->GetDistanceToMe(worldPosition);
         string playerName = game->GetPlayerName(Entity);
 
-        Vector3f orientation = game->GetOrientation(Entity);
-        Vector3f headPosition = worldPosition + game->GetBonePosition(Entity, 24) + orientation;
+        Vector3f headPosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 24));
         Vector2f headScreenPos;
         game->WorldToScreen(headPosition, headScreenPos);
 
@@ -83,6 +82,7 @@ void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool u
 
 void DayzReader::GetLoot(ESPObjectArray *a, float width, float height)
 {
+    bool foundFood = false;
     for (uint64_t Item : game->GetAllItems()) // all items
     {
         Vector3f worldPosition = game->GetCoordinate(Item);
@@ -92,29 +92,35 @@ void DayzReader::GetLoot(ESPObjectArray *a, float width, float height)
             continue;
 
         float distanceToMe = game->GetDistanceToMe(worldPosition);
-        if (distanceToMe > 150)
-            continue;
+        float maxRenderDistance = 0;
+
         string itemName = game->GetItemName(Item);
         ESPObject Object;
-        if (game->food.find(itemName) != game->food.end() && false)
+
+        if (game->food.find(itemName) != game->food.end() && !foundFood)
         {
             Object.r = 255 / 255.f;
             Object.g = 87 / 255.f;
             Object.b = 51 / 255.f;
+            foundFood = true;
+            maxRenderDistance = 100.f;
         }
         else if (game->gear.find(itemName) != game->gear.end())
         {
             Object.r = 0 / 255.f;
             Object.g = 255 / 255.f;
             Object.b = 255 / 255.f;
+            maxRenderDistance = 1000.f;
         }
         else if (game->items.find(itemName) != game->items.end())
         {
             Object.r = 0 / 255.f;
             Object.g = 27 / 255.f;
             Object.b = 255 / 255.f;
+            maxRenderDistance = 300.f;
         }
-        else
+
+        if (distanceToMe > maxRenderDistance)
             continue;
 
         strcpy(Object.pName, itemName.c_str());
