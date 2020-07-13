@@ -17,7 +17,7 @@ typedef struct
     float inGameDistance;
     float r, g, b;
     bool drawBones;
-    std::pair<Vector2f, Vector2f> bones[10];
+    std::pair<Vector2f, Vector2f> bones[30];
 }ESPObject;
 
 typedef struct

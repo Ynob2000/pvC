@@ -11,27 +11,110 @@ bool DayzReader::InGame()
 void DayzReader::fillBones(ESPObject& Object, uint64_t Entity, bool localPlayer = false)
 {
     Object.drawBones = true;
-    Vector3f playerPosition = game->GetCoordinate(Entity);
-    Vector3f playerOrientation = game->GetOrientation(Entity);
     Vector3f bonePosition;
     Vector2f screenPos1;
     Vector2f screenPos2;
-    bonePosition = playerPosition + game->GetBonePosition(Entity, 1);
-    game->WorldToScreen(playerPosition, screenPos1);
-    bonePosition = playerPosition + game->GetBonePosition(Entity, 6);
-    game->WorldToScreen(playerPosition + playerOrientation * 3.f, screenPos2);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 1), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos1);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 22), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos2);
     Object.bones[0] = std::make_pair(screenPos1, screenPos2);
-//    bonePosition = playerPosition + game->GetBonePosition(Entity, 1);
-//    game->WorldToScreen(bonePosition, screenPos1);
-//    bonePosition = playerPosition + game->GetBonePosition(Entity, 6);
-//    game->WorldToScreen(bonePosition, screenPos2);
-//    Object.bones[0] = std::make_pair(screenPos1, screenPos2);
-//
-//    bonePosition = playerPosition + game->GetBonePosition(Entity, 14);
-//    game->WorldToScreen(bonePosition, screenPos1);
-//    bonePosition = playerPosition + game->GetBonePosition(Entity, 9);
-//    game->WorldToScreen(bonePosition, screenPos2);
-//    Object.bones[1] = std::make_pair(screenPos1, screenPos2);
+
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 1), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos1);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 2), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos2);
+    Object.bones[1] = std::make_pair(screenPos1, screenPos2);
+
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 2), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos1);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 4), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos2);
+    Object.bones[2] = std::make_pair(screenPos1, screenPos2);
+
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 4), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos1);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 7), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos2);
+    Object.bones[3] = std::make_pair(screenPos1, screenPos2);
+
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 7), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos1);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 9), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos2);
+    Object.bones[4] = std::make_pair(screenPos1, screenPos2);
+
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 1), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos1);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 10), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos2);
+    Object.bones[5] = std::make_pair(screenPos1, screenPos2);
+
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 10), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos1);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 12), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos2);
+    Object.bones[6] = std::make_pair(screenPos1, screenPos2);
+
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 12), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos1);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 15), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos2);
+    Object.bones[7] = std::make_pair(screenPos1, screenPos2);
+
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 15), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos1);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 17), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos2);
+    Object.bones[8] = std::make_pair(screenPos1, screenPos2);
+
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 22), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos1);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 23), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos2);
+    Object.bones[9] = std::make_pair(screenPos1, screenPos2);
+
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 23), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos1);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 24), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos2);
+    Object.bones[10] = std::make_pair(screenPos1, screenPos2);
+
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 62), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos1);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 64), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos2);
+    Object.bones[11] = std::make_pair(screenPos1, screenPos2);
+
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 64), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos1);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 66), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos2);
+    Object.bones[12] = std::make_pair(screenPos1, screenPos2);
+
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 66), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos1);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 68), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos2);
+    Object.bones[13] = std::make_pair(screenPos1, screenPos2);
+
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 62), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos1);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 95), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos2);
+    Object.bones[14] = std::make_pair(screenPos1, screenPos2);
+
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 95), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos1);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 98), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos2);
+    Object.bones[15] = std::make_pair(screenPos1, screenPos2);
+
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 98), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos1);
+    bonePosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 100), localPlayer);
+    game->WorldToScreen(bonePosition, screenPos2);
+    Object.bones[16] = std::make_pair(screenPos1, screenPos2);
 }
 
 void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool use_aimbot)
@@ -51,15 +134,6 @@ void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool u
         Vector3f headPosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 24));
         Vector2f headScreenPos;
         game->WorldToScreen(headPosition, headScreenPos);
-
-//        printf("PlayerName: %s                \n", playerName.c_str());
-//        printf("Ptr: %lu                \n", ptr);
-//        printf("Type: %s                      \n", game->GetTypeName(Entity).c_str());
-//        printf("Model: %s                     \n", game->GetModelName(Entity).c_str());
-//        printf("Item in Hands: %s             \n", game->GetItemInHands(Entity).c_str());
-//        printf("Distance: %.0fm               \n", distanceToMe);
-//        printf("Position: %.1f : %.1f : %.1f  \n", worldPosition.x, worldPosition.y, worldPosition.z);
-//        printf("ScreenPosition: %.1f : %.1f    \n", screenPos.x, screenPos.y);
         ESPObject Object;
         strcpy(Object.pName, playerName.c_str());
         Object.r = 255 / 255.f;
@@ -72,7 +146,7 @@ void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool u
         Object.inGameDistance = distanceToMe;
         Object.drawBones = false;
 
-        if (distanceToMe < 200)
+        if (distanceToMe < 500)
             fillBones(Object, Entity);
 
         insertArray(a, Object);

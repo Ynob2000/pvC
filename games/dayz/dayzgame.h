@@ -297,9 +297,9 @@ public:
         auto a = GameProcess->Read<Matrix3x4>(visualState + off_visualstate_matrix);
         float x = o[0], y = o[1], z = o[2];
         Vector3f output{};
-        output.x = a.m[0]*x + a.m[1]*y + a.m[2]*z + a.m[9];
-        output.y = a.m[3]*x + a.m[4]*y + a.m[5]*z + a.m[10];
-        output.z = a.m[6]*x + a.m[7]*y + a.m[8]*z + a.m[11];
+        output.x = a.m[0]*x + a.m[3]*y + a.m[6]*z + a.m[9];
+        output.y = a.m[1]*x + a.m[4]*y + a.m[7]*z + a.m[10];
+        output.z = a.m[2]*x + a.m[5]*y + a.m[8]*z + a.m[11];
         return output;
     }
     void MovCameraUp(){
