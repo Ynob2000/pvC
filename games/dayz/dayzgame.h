@@ -477,7 +477,9 @@ public:
             "Standardized Suppressor",
 	    "Normalized Suppressor",
  	    "Hunting Scope",
-	    "Pistol Suppressor" 
+	    "Pistol Suppressor",
+	    "Ballistic Vest",
+	    "Hunter Backpack" 
 	    	
     };
 
