@@ -207,7 +207,7 @@ void Menu::RenderMenu(const std::vector<data>& ds)
 
 			if (p.drawB)
 			{
-				for (int i = 0; i < 10; ++i)
+				for (int i = 0; i < 30; ++i)
 				{
 					ImGui::GetOverlayDrawList()->AddLine(
 						ImVec2(p.bones[i].first.x, p.bones[i].first.y), 

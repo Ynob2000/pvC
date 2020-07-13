@@ -29,7 +29,7 @@ typedef struct
 	float inGameDistance;
 	float r, g, b;
 	bool drawB;
-	std::pair<Vector2f, Vector2f> bones[10];
+	std::pair<Vector2f, Vector2f> bones[30];
 } data;
 
 typedef struct
