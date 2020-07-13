@@ -136,9 +136,17 @@ void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool u
         game->WorldToScreen(headPosition, headScreenPos);
         ESPObject Object;
         strcpy(Object.pName, playerName.c_str());
-        Object.r = 255 / 255.f;
-        Object.g = 0 / 255.f;
-        Object.b = 0 / 255.f;
+        if (playerName == "Manoush" || playerName == "someDude" || playerName == "chapi chapo") {
+            Object.r = 0 / 255.f;
+            Object.g = 255 / 255.f;
+            Object.b = 0 / 255.f;
+        }
+        else
+        {
+            Object.r = 255 / 255.f;
+            Object.g = 0 / 255.f;
+            Object.b = 0 / 255.f;
+        }
         Object.x = screenPos.x;
         Object.y = screenPos.y;
         Object.xHead = headScreenPos.x;
