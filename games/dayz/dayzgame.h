@@ -43,7 +43,7 @@ public:
         return GetPlayerIdentityPlayerName(playerIdentity);
     };
     string GetItemName(uint64_t Entity){
-        return DayzGame::ReadArmaString(ReadPtrChain(GameProcess, Entity, {0xE0, 0x450}));
+        return DayzGame::ReadArmaString(ReadPtrChain(GameProcess, Entity, {0xE0 + 0x20, 0x450}));
     };
     int GetPlayerIdentityNetworkId(uint64_t Identity){
         return GameProcess->Read<uint64_t>(Identity + off_playeridentity_networkid);
