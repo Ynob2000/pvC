@@ -12,8 +12,8 @@ using namespace std;
 
 //this offset for last build 03/01/2019 (march)
 
-#define off_world 0x402B8B8
-#define off_networkmanager 0xDD7EE0
+#define off_world 0x402B938
+#define off_networkmanager 0xDD7F60
 
 #define off_networkmanager_networkclient 0x50
 
