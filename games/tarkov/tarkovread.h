@@ -27,7 +27,7 @@ public:
         return out;
     }
 
-    static void fillBones(const Matrix4f&, TarkovPlayerBones&, TarkovSkeletonRoot&, float, float, Vector2f*, ESPObject&);
+    static void fillBones(const Matrix4f&, TarkovPlayerBones&, TarkovSkeletonRoot&, float, float,const Vector2f&, ESPObject&);
 
     bool InGame() override;
     void GetPlayers(ESPObjectArray *, float, float, bool) override;

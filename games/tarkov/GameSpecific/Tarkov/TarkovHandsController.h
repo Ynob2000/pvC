@@ -30,5 +30,12 @@ public:
         return get_transform_position(GameProcess, transform);
     }
 
-
+    float GetBulletVelocity()
+    {
+        uint64_t ActiveWeapon = GameProcess->Read<uint64_t>(Address + 0x50);
+        uint64_t slot = GameProcess->Read<uint64_t>(ActiveWeapon + 0x98);
+        uint64_t ammo = GameProcess->Read<uint64_t>(slot + 0x38);
+        uint64_t ammoTemplate = GameProcess->Read<uint64_t>(ammo + 0x20);
+        return GameProcess->Read<float>(ammoTemplate + 0x174);
+    }
 };

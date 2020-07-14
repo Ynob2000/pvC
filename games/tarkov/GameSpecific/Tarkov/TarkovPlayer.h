@@ -78,6 +78,13 @@ public:
         return TarkovProceduralWeaponAnimation(GameProcess, GameProcess->Read<uint64_t>(Address + 0x168));
     }
 
+    Vector3f GetVelocity()
+    {
+        //5cc : vector3_1(type : UnityEngine.Vector3)
+        //604 : vector3_2(type : UnityEngine.Vector3)
+        return GameProcess->Read<Vector3f>(Address + 0x5cc);
+    }
+
     void DebugDump()
     {
         printf("Player Dump\n");
