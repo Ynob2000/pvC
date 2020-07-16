@@ -66,6 +66,14 @@ public:
         uint64_t handsStamina = GameProcess->Read<uint64_t>(physical + 0x30);
         GameProcess->Write<float>(stamina + 0x48, 100.f);
         GameProcess->Write<float>(handsStamina + 0x48, 100.f);
+        //thermalVision();
+    }
+
+    void thermalVision()
+    {
+        auto thermalVisionObserver = GameProcess->Read<uint64_t>(Address + 0x2b8);
+        uint64_t thermal = GameProcess->Read<uint64_t>(thermalVisionObserver + 0x18);
+        GameProcess->Write<bool>(thermal + 0x140, true);
     }
 
     TarkovHandsController GetPlayerHandsController()
@@ -80,9 +88,8 @@ public:
 
     Vector3f GetVelocity()
     {
-        //5cc : vector3_1(type : UnityEngine.Vector3)
-        //604 : vector3_2(type : UnityEngine.Vector3)
-        return GameProcess->Read<Vector3f>(Address + 0x5cc);
+        auto characterController = GameProcess->Read<uint64_t>(Address + 0x20);
+        return GameProcess->Read<Vector3f>(characterController + 0xD0 + 0x8);
     }
 
     void DebugDump()

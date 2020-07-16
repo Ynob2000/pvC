@@ -28,6 +28,8 @@ static int CalculateDataCount(RWInfo* info, size_t count);
 
 ssize_t VMemRead(const ProcessData* data, uint64_t dirBase, uint64_t local, uint64_t remote, size_t size)
 {
+    if (size > 500000)
+        return 0;
 	if ((remote >> 12ull) == ((remote + size) >> 12ull))
 		return MemRead(data, local, VTranslate(data, dirBase, remote), size);
 

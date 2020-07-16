@@ -25,17 +25,18 @@ public:
 
     Vector3f GetFireportPosition()
     {
-        uint64_t Fireport = GameProcess->Read<uint64_t>(Address + 0xd0);  // Bifacial transform
-        uint64_t transform = GameProcess->Read<uint64_t>(Fireport + 0x10);  // Original
+        auto Fireport = GameProcess->Read<uint64_t>(Address + 0xd0);  // Bifacial transform
+        auto transform = GameProcess->Read<uint64_t>(Fireport + 0x10);  // Original
         return get_transform_position(GameProcess, transform);
     }
 
     float GetBulletVelocity()
     {
-        uint64_t ActiveWeapon = GameProcess->Read<uint64_t>(Address + 0x50);
-        uint64_t slot = GameProcess->Read<uint64_t>(ActiveWeapon + 0x98);
-        uint64_t ammo = GameProcess->Read<uint64_t>(slot + 0x38);
-        uint64_t ammoTemplate = GameProcess->Read<uint64_t>(ammo + 0x20);
+        auto ActiveWeapon = GameProcess->Read<uint64_t>(Address + 0x50);
+        auto magazineSlot = GameProcess->Read<uint64_t>(ActiveWeapon + 0xa8);
+        auto ammo = GameProcess->Read<uint64_t>(magazineSlot + 0x38);
+        auto ammoTemplate = GameProcess->Read<uint64_t>(ammo + 0x40);
+        uint32_t test = GameProcess->Read<uint32_t>(ammoTemplate + 0x170);
         return GameProcess->Read<float>(ammoTemplate + 0x174);
     }
 };

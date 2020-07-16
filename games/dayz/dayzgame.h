@@ -182,6 +182,14 @@ public:
         return GameProcess->Read<uint64_t>(
                 DayzGame::GetWorld() + off_world_itemtable + (index * 0x20) + off_length);
     };
+    uint64_t GetWeirdItemTable(int index = 0){
+        return GameProcess->Read<uint64_t>(
+                DayzGame::GetWorld() + off_world_weirditemtable + (index * 0x20));
+    };
+    uint64_t GetWeirdItemTableSize(int index = 0){
+        return GameProcess->Read<uint64_t>(
+                DayzGame::GetWorld() + off_world_weirditemtable + (index * 0x20) + off_length);
+    };
     uint64_t NearEntityTable(){
         return GameProcess->Read<uint64_t>(
                 DayzGame::GetWorld() + off_world_nearanimaltable);
@@ -197,6 +205,14 @@ public:
     int FarEntityTableSize(){
         return GameProcess->Read<int>(
                 DayzGame::GetWorld() + off_world_faranimaltable + off_length);
+    };
+    uint64_t SlowEntityTable(){
+        return GameProcess->Read<uint64_t>(
+                DayzGame::GetWorld() + off_world_slowanimaltable);
+    };
+    int SlowEntityTableSize(){
+        return GameProcess->Read<int>(
+                DayzGame::GetWorld() + off_world_slowanimaltable + off_length);
     };
     uint64_t BulletTable(){
         return GameProcess->Read<uint64_t>(
@@ -220,6 +236,17 @@ public:
             uint64_t pItem = GameProcess->Read<uint64_t>(pCurrentIndex + 0x8);
             arrayList.push_back(pItem);
         }
+//        pItemTable = GetWeirdItemTable();
+//        lAllocCount = GetWeirdItemTableSize();
+//
+//        for (int i = 0; i < lAllocCount; i++)
+//        {
+//            uint64_t pCurrentIndex = pItemTable + (0x18 * i);
+//            if (GameProcess->Read<uint32_t>(pCurrentIndex) != 1)
+//                continue;
+//            uint64_t pItem = GameProcess->Read<uint64_t>(pCurrentIndex + 0x8);
+//            arrayList.push_back(pItem);
+//        }
         return arrayList;
     };
     vector<uint64_t> GetNearEntities(){
@@ -241,10 +268,11 @@ public:
     vector<uint64_t> GetAllEntities(){
         vector<uint64_t> arrayList;
         int nearEntitySize = DayzGame::NearEntityTableSize();
+        uint64_t table = DayzGame::NearEntityTable();
 
         for (int playerId = NULL; playerId < nearEntitySize; ++playerId) {
             if (playerId != 0) { // check if entity != localplayer
-                uint64_t targetentity = DayzGame::GetEntity(DayzGame::NearEntityTable(), playerId);
+                uint64_t targetentity = DayzGame::GetEntity(table, playerId);
 
                 if (DayzGame::GetEntityTypeName(targetentity) == "dayzplayer") {
                     arrayList.push_back(targetentity);
@@ -252,13 +280,23 @@ public:
             }
         }
 
+        table = DayzGame::FarEntityTable();
         for (int playerId = NULL; playerId < DayzGame::FarEntityTableSize(); ++playerId) {
-            uint64_t targetentity = DayzGame::GetEntity(DayzGame::FarEntityTable(), playerId);
+            uint64_t targetentity = DayzGame::GetEntity(table, playerId);
 
             if (DayzGame::GetEntityTypeName(targetentity) == "dayzplayer") {
                 arrayList.push_back(targetentity);
             }
         }
+//
+//        table = DayzGame::SlowEntityTable();
+//        for (int playerId = NULL; playerId < DayzGame::SlowEntityTableSize(); ++playerId) {
+//            uint64_t targetentity = DayzGame::GetEntity(table, playerId);
+//            printf("%s\n", DayzGame::GetEntityTypeName(targetentity).c_str());
+//            if (DayzGame::GetEntityTypeName(targetentity) == "helicrash") {
+//                arrayList.push_back(targetentity);
+//            }
+//        }
 
         return arrayList;
     };
@@ -519,6 +557,8 @@ private:
     string ReadArmaString(uint64_t address)
     {
         int length = GameProcess->Read<uint64_t>(address + off_length);
+        if (length > 100)
+            return "unknown";
         char buffer[100];
         GameProcess->Read(address + off_text, buffer, length);
         return buffer;

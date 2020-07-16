@@ -36,8 +36,9 @@ using namespace std;
 
 #define off_world_nearanimaltable 0xE90
 #define off_world_faranimaltable 0xFD8
-#define off_world_slowanimaltable 0x1F40
+#define off_world_slowanimaltable 0x1f40
 #define off_world_itemtable 0x1F90
+#define off_world_weirditemtable 0x23D8
 #define off_world_bullettable 0xD48
 
 #define off_world_cameraon 0x2898

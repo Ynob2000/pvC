@@ -174,7 +174,7 @@ void DayzReader::GetLoot(ESPObjectArray *a, float width, float height)
             continue;
 
         float distanceToMe = game->GetDistanceToMe(worldPosition);
-        float maxRenderDistance = 0;
+        float maxRenderDistance = 500;
 
         string itemName = game->GetItemName(Item);
         ESPObject Object;
@@ -192,14 +192,16 @@ void DayzReader::GetLoot(ESPObjectArray *a, float width, float height)
             Object.r = 0 / 255.f;
             Object.g = 255 / 255.f;
             Object.b = 255 / 255.f;
-            maxRenderDistance = 1000.f;
         }
         else if (game->items.find(itemName) != game->items.end())
         {
             Object.r = 0 / 255.f;
             Object.g = 27 / 255.f;
             Object.b = 255 / 255.f;
-            maxRenderDistance = 300.f;
+        }
+        else
+        {
+            continue;
         }
 
         if (distanceToMe > maxRenderDistance)
