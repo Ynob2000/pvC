@@ -177,8 +177,9 @@ void TarkovReader::GetPlayers(ESPObjectArray *a, float width, float height, bool
         WorldToScreen(CameraMatrix, headPosition, HeadScreenPos, width, height);
         HeadScreenPos += LocalScreenPos;
 
+        TarkovPlayerInfo playerInfo = Player.GetPlayerProfile().GetPlayerInfo();
         ESPObject Object;
-        strcpy(Object.pName, (Player.IsScav() ? Player.IsPlayerScav() ? "Player Scav" : "Scav" : Player.GetPlayerProfile().GetPlayerInfo().GetPlayerName().GetString()).c_str());
+        strcpy(Object.pName, ((Player.IsScav() ? "Scav" : Player.IsPlayerScav() ? "Player Scav" : (playerInfo.GetPlayerName().GetString()) + "(" + std::to_string(playerInfo.GetLevel()) + ")")).c_str());
         if (Player.IsScav())
         {
             Object.r = 255 / 255.f;
