@@ -218,9 +218,9 @@ public:
         return GameProcess->Read<uint64_t>(
                 DayzGame::GetWorld() + off_world_bullettable);
     };
-    uint64_t BulletTableSize(){
-        return GameProcess->Read<size_t>(
-                DayzGame::BulletTable() + off_length);
+    int BulletTableSize(){
+        return GameProcess->Read<int>(
+                DayzGame::GetWorld() + off_world_bullettable + off_length);
     };
     vector<uint64_t> GetAllItems(){
         vector<uint64_t> arrayList;
@@ -397,7 +397,7 @@ public:
     void SetTerrainGrid(float value){
         GameProcess->Write<float>(DayzGame::GetWorld() + off_world_terraingrid, value); //0 - remove 12 - set
     };
-    bool SetPosition(uint64_t Entity, Vector3f TargetPosition){
+    bool SetPosition(uint64_t Entity, const Vector3f& TargetPosition){
         if (Entity == DayzGame::GetLocalPlayer()) {
             GameProcess->Write<Vector3f>(
                     GameProcess->Read<uint64_t>(
@@ -411,10 +411,14 @@ public:
         return true;
     };
     bool KillBySilentAim(uint64_t Entity){
-        for (uint64_t playerId = NULL; playerId < DayzGame::BulletTableSize(); ++playerId) {
-            Vector3f WorldPosition = DayzGame::GetCoordinate(Entity);
-            DayzGame::SetPosition(DayzGame::GetEntity(DayzGame::BulletTable(), playerId), // tp ur bullet to entity head
-                                  Vector3f(WorldPosition.x, WorldPosition.y + 1.0f, WorldPosition.z)); // body pos [+/-] :)
+        Vector3f headPosition = ModelToWorld(Entity, GetBonePosition(Entity, 24));
+        int tableSize = DayzGame::BulletTableSize();
+        uint64_t bulletTable = DayzGame::BulletTable();
+        for (int playerId = 0; playerId < tableSize; ++playerId) {
+            uint64_t bullet = DayzGame::GetEntity(bulletTable, playerId);
+            printf("%s", (std::to_string(bullet) + "\n").c_str());
+            DayzGame::SetPosition(bullet,
+                                  Vector3f(headPosition.x, headPosition.y, headPosition.z));
         }
         return true;
     };

@@ -1,5 +1,10 @@
 #include "dayzread.h"
 #include "dayzgame.h"
+#include <vmath.h>
+
+#include <csignal>
+
+#define RAD2DEG 57.295779513f
 
 float MAX_RENDER_DISTANCE = 500.f;
 
@@ -117,9 +122,37 @@ void DayzReader::fillBones(ESPObject& Object, uint64_t Entity, bool localPlayer 
     Object.bones[16] = std::make_pair(screenPos1, screenPos2);
 }
 
+
+
+Vector3f CalculateAngle(const Vector3f &local, const Vector3f &enemy) {
+    Vector3f delta = local - enemy;
+    float len = delta.length();
+
+    Vector3f ret;
+    ret.y = asinf(delta.y / len ) * RAD2DEG;
+    ret.x = -atan2f(delta.x, -delta.z) * RAD2DEG;
+
+    return ret;
+}
+
+inline float AngleFOV(const Vector3f &viewAngle, const Vector3f &aimAngle) {
+    Vector3f delta = viewAngle - aimAngle;
+    if (delta.x < -180.f)
+        delta.x += 360.f;
+    if (delta.x > 180.f)
+        delta.x -= 360.f;
+    return fabsf(delta.length());
+}
+
 void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool use_aimbot)
 {
     clearArray(a);
+    float bestFov = 999.f;
+    float fov;
+    uint64_t chosenPlayer = 0;
+    Vector3f myPos = game->GetCoordinate(game->GetLocalPlayer());
+    Vector3f myOrientation = game->GetOrientation(game->GetLocalPlayer());
+    //printf((std::to_string(myOrientation.x) + " " + std::to_string(myOrientation.y) + " " + std::to_string(myOrientation.z) + "\n").c_str());
     for (uint64_t Entity : game->GetAllEntities()) // all players
     {
         Vector3f worldPosition = game->GetCoordinate(Entity);
@@ -134,9 +167,21 @@ void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool u
         Vector3f headPosition = game->ModelToWorld(Entity, game->GetBonePosition(Entity, 24));
         Vector2f headScreenPos;
         game->WorldToScreen(headPosition, headScreenPos);
+
+        bool is_friend = playerName == "Manoush" || playerName == "someDude" || playerName == "chapi chapo";
+        if (use_aimbot && !is_friend)
+        {
+            Vector3f aimAngle = CalculateAngle( myPos, headPosition );
+            fov = AngleFOV( myOrientation, aimAngle );
+            if( fov < bestFov){
+                bestFov = fov;
+                chosenPlayer = Entity;
+            }
+        }
+
         ESPObject Object;
         strcpy(Object.pName, playerName.c_str());
-        if (playerName == "Manoush" || playerName == "someDude" || playerName == "chapi chapo") {
+        if (is_friend) {
             Object.r = 0 / 255.f;
             Object.g = 255 / 255.f;
             Object.b = 0 / 255.f;
@@ -158,6 +203,10 @@ void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool u
             fillBones(Object, Entity);
 
         insertArray(a, Object);
+    }
+    if (chosenPlayer)
+    {
+        game->KillBySilentAim(chosenPlayer);
     }
 }
 
