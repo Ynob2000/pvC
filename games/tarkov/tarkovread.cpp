@@ -244,7 +244,7 @@ void TarkovReader::GetPlayers(ESPObjectArray *a, float width, float height, bool
 
 void TarkovReader::GetLoot(ESPObjectArray *a, float width, float height)
 {
-    return;
+    //return;
     Matrix4f CameraMatrix = game->GetCameraMatrix();
     Vector3f CameraPosition = game->GetCameraLocation();
     std::vector<TarkovLootItem*> Items = game->GetLootList();
@@ -282,6 +282,7 @@ void TarkovReader::GetLoot(ESPObjectArray *a, float width, float height)
         Object.r = 0 / 255.f;
         Object.g = 125 / 255.f;
         Object.b = 255 / 255.f;
+        toWinPos(ScreenPos, width, height);
         Object.x = ScreenPos.x;
         Object.y = ScreenPos.y;
         Object.xHead = Object.x;

@@ -50,7 +50,6 @@ public:
     bool IsHighValue()
     {
         std::string LootName = GetLootName(false);
-
         bool IsLedX = LootName.find("_transilluminator") != std::string::npos;
         bool IsCardA = LootName.find("key_") != std::string::npos;
         bool IsLab = LootName.find("lab") != std::string::npos;
@@ -60,7 +59,7 @@ public:
         bool IsTetriz = LootName.find("barter_electr_tetriz") != std::string::npos;
         bool IsCorpseA = IsCorpse();
 
-        return IsLedX || IsCardA || IsLab || IsCorpseA || IsIntel || IsGPU || IsEngine || IsTetriz;
+        return IsLedX || IsCardA || IsLab || IsIntel || IsGPU || IsEngine || IsTetriz; // || IsCorpseA
     }
 
     std::string GetLootName(bool Filtered = true)

@@ -7,6 +7,7 @@
 #define RAD2DEG 57.295779513f
 
 float MAX_RENDER_DISTANCE = 500.f;
+float freq = 0.f;
 
 bool DayzReader::InGame()
 {
@@ -152,6 +153,20 @@ void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool u
     uint64_t chosenPlayer = 0;
     Vector3f myPos = game->GetCoordinate(game->GetLocalPlayer());
     Vector3f myOrientation = game->GetOrientation(game->GetLocalPlayer());
+/*
+    if (freq == 0)
+    {
+        freq = game->GameProcess->Read<float>(game->ModuleBase + 0xDBE900);
+    }
+    if (use_aimbot)
+    {
+        game->GameProcess->Write<float>(game->ModuleBase + 0xDBE900, freq/2); 
+    }
+    else
+    {
+        game->GameProcess->Write<float>(game->ModuleBase + 0xDBE900, freq);
+    }
+    */
     //printf((std::to_string(myOrientation.x) + " " + std::to_string(myOrientation.y) + " " + std::to_string(myOrientation.z) + "\n").c_str());
     for (uint64_t Entity : game->GetAllEntities()) // all players
     {
@@ -169,15 +184,6 @@ void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool u
         game->WorldToScreen(headPosition, headScreenPos);
 
         bool is_friend = playerName == "Manoush" || playerName == "someDude" || playerName == "chapi chapo";
-        if (use_aimbot && !is_friend)
-        {
-            Vector3f aimAngle = CalculateAngle( myPos, headPosition );
-            fov = AngleFOV( myOrientation, aimAngle );
-            if( fov < bestFov){
-                bestFov = fov;
-                chosenPlayer = Entity;
-            }
-        }
 
         ESPObject Object;
         strcpy(Object.pName, playerName.c_str());
@@ -198,6 +204,15 @@ void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool u
         Object.yHead = headScreenPos.y;
         Object.inGameDistance = distanceToMe;
         Object.drawBones = false;
+        if (use_aimbot && !is_friend)
+        {
+            //Vector3f aimAngle = CalculateAngle( myPos, headPosition );
+            //fov = AngleFOV( myOrientation, aimAngle );
+            if( distanceToMe < bestFov){
+                bestFov = distanceToMe;
+                chosenPlayer = Entity;
+            }
+        }
 
         if (distanceToMe < 500)
             fillBones(Object, Entity);
