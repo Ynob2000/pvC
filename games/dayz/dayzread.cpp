@@ -8,6 +8,7 @@
 
 float MAX_RENDER_DISTANCE = 500.f;
 float freq = 0.f;
+std::set<std::string> weirdObjects;
 
 bool DayzReader::InGame()
 {
@@ -263,12 +264,19 @@ void DayzReader::GetLoot(ESPObjectArray *a, float width, float height)
             Object.g = 27 / 255.f;
             Object.b = 255 / 255.f;
         }
-        else if (distanceToMe > 200.f)
+        /*
+        else if (std::find(weirdObjects.begin(), weirdObjects.end(), itemName) != weirdObjects.end())
         {
             Object.r = 150 / 255.f;
             Object.g = 27 / 255.f;
             Object.b = 255 / 255.f;
         }
+        else if (distanceToMe > 200.f)
+        {
+            weirdObjects.insert(itemName);
+            continue;
+        }
+        */
         else 
             continue;
 

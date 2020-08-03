@@ -236,8 +236,13 @@ public:
             uint64_t pItem = GameProcess->Read<uint64_t>(pCurrentIndex + 0x8);
             arrayList.push_back(pItem);
         }
-        pItemTable = GetWeirdItemTable();
-        lAllocCount = GetWeirdItemTableSize();
+        return arrayList;
+    };
+    vector<uint64_t> GetWeirdItems(){
+        vector<uint64_t> arrayList;
+
+        uint64_t pItemTable = GetWeirdItemTable();
+        uint32_t lAllocCount = GetWeirdItemTableSize();
 
         for (int i = 0; i < lAllocCount; i++)
         {
