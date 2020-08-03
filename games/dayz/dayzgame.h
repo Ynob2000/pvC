@@ -236,17 +236,17 @@ public:
             uint64_t pItem = GameProcess->Read<uint64_t>(pCurrentIndex + 0x8);
             arrayList.push_back(pItem);
         }
-//        pItemTable = GetWeirdItemTable();
-//        lAllocCount = GetWeirdItemTableSize();
-//
-//        for (int i = 0; i < lAllocCount; i++)
-//        {
-//            uint64_t pCurrentIndex = pItemTable + (0x18 * i);
-//            if (GameProcess->Read<uint32_t>(pCurrentIndex) != 1)
-//                continue;
-//            uint64_t pItem = GameProcess->Read<uint64_t>(pCurrentIndex + 0x8);
-//            arrayList.push_back(pItem);
-//        }
+        pItemTable = GetWeirdItemTable();
+        lAllocCount = GetWeirdItemTableSize();
+
+        for (int i = 0; i < lAllocCount; i++)
+        {
+            uint64_t pCurrentIndex = pItemTable + (0x18 * i);
+            if (GameProcess->Read<uint32_t>(pCurrentIndex) != 1)
+                continue;
+            uint64_t pItem = GameProcess->Read<uint64_t>(pCurrentIndex + 0x8);
+            arrayList.push_back(pItem);
+        }
         return arrayList;
     };
     vector<uint64_t> GetNearEntities(){
@@ -521,7 +521,10 @@ public:
  	    "Hunting Scope",
 	    "Pistol Suppressor",
 	    "Ballistic Vest",
-	    "Hunter Backpack" 
+	    "Hunter Backpack",
+        "Lock Pick",
+        "Wooden Crate",
+        "Fireplace"
 	    	
     };
 

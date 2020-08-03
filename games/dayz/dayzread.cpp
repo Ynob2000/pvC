@@ -148,7 +148,7 @@ inline float AngleFOV(const Vector3f &viewAngle, const Vector3f &aimAngle) {
 void DayzReader::GetPlayers(ESPObjectArray *a, float width, float height, bool use_aimbot)
 {
     clearArray(a);
-    float bestFov = 999.f;
+    float bestFov = 20000.f;
     float fov;
     uint64_t chosenPlayer = 0;
     Vector3f myPos = game->GetCoordinate(game->GetLocalPlayer());
@@ -238,7 +238,7 @@ void DayzReader::GetLoot(ESPObjectArray *a, float width, float height)
             continue;
 
         float distanceToMe = game->GetDistanceToMe(worldPosition);
-        float maxRenderDistance = 500;
+        float maxRenderDistance = 2000;
 
         string itemName = game->GetItemName(Item);
         ESPObject Object;
@@ -263,10 +263,14 @@ void DayzReader::GetLoot(ESPObjectArray *a, float width, float height)
             Object.g = 27 / 255.f;
             Object.b = 255 / 255.f;
         }
-        else
+        else if (distanceToMe > 200.f)
         {
-            continue;
+            Object.r = 150 / 255.f;
+            Object.g = 27 / 255.f;
+            Object.b = 255 / 255.f;
         }
+        else 
+            continue;
 
         if (distanceToMe > maxRenderDistance)
             continue;
